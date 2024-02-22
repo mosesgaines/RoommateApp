@@ -6,14 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.roommateapp.databinding.FragmentSecondBinding;
+import com.example.roommateapp.databinding.GroupsFragmentBinding;
 
-public class SecondFragment extends Fragment {
+public class GroupsFragment extends Fragment {
 
-    private FragmentSecondBinding binding;
+    private GroupsFragmentBinding binding;
 
     @Override
     public View onCreateView(
@@ -21,7 +22,7 @@ public class SecondFragment extends Fragment {
             Bundle savedInstanceState
     ) {
 
-        binding = FragmentSecondBinding.inflate(inflater, container, false);
+        binding = GroupsFragmentBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
     }
@@ -32,8 +33,8 @@ public class SecondFragment extends Fragment {
         binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(SecondFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
+                NavHostFragment.findNavController(GroupsFragment.this)
+                        .navigate(R.id.action_GroupsFragment_to_LoginFragment);
             }
         });
     }
