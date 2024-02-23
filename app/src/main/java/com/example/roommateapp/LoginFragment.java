@@ -8,21 +8,25 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import android.util.Log;
 
 import com.example.roommateapp.databinding.LoginFragmentBinding;
+
 
 
 public class LoginFragment extends Fragment {
 
     private LoginFragmentBinding binding;
+    private static final String TAG = "MainActivity";
+
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
+            Bundle savedInstanceState) {
 
         binding = LoginFragmentBinding.inflate(inflater, container, false);
+        Log.d(TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle) called");
         return binding.getRoot();
 
     }
