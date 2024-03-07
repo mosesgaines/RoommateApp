@@ -1,47 +1,47 @@
 package com.example.roommateapp;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.roommateapp.databinding.LoginFragmentBinding;
+import com.example.roommateapp.databinding.SignupFragmentBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import com.google.android.gms.tasks.OnCompleteListener;
+public class SignupFragment extends Fragment {
 
-
-public class LoginFragment extends Fragment {
-
-    private LoginFragmentBinding binding;
+    private SignupFragmentBinding binding;
     private FirebaseAuth mAuth;
-    private static final String TAG = "MainActivity";
 
+    private static final String TAG = "SignupFragment";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
-    }
 
+    }
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        binding = LoginFragmentBinding.inflate(inflater, container, false);
-        Log.d(TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle) called");
+        binding = SignupFragmentBinding.inflate(inflater, container, false);
+//        Log.d(TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle) called");
         return binding.getRoot();
 
     }
@@ -49,13 +49,20 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.loginButton.setOnClickListener(e ->
-                signIn(binding.email.getText().toString(), binding.password.getText().toString()));
+        binding.exitButton.setOnClickListener(e -> NavHostFragment.findNavController(SignupFragment.this)
+                .navigate(R.id.action_SignupFragment_to_LoginFragment));
 
-        binding.signupText.setOnClickListener(e -> NavHostFragment.findNavController(LoginFragment.this)
-                .navigate(R.id.action_LoginFragment_to_SignupFragment));
-
-
+        binding.doneButton.setOnClickListener(e -> {
+            String email = binding.email.getText().toString();
+            String password = binding.password.getText().toString();
+            String confirmPassword = binding.passwordConfirm.getText().toString();
+            if (password.equals(confirmPassword)) {
+                createAccount(email, password);
+            } else {
+                Toast.makeText(getContext(), "Passwords do not match.",
+                        Toast.LENGTH_SHORT).show();
+            }
+                });
     }
 
     @Override
@@ -83,35 +90,36 @@ public class LoginFragment extends Fragment {
             binding.password.setError(null);
         }
 
+        String confirmPassword = binding.passwordConfirm.getText().toString();
+        if (TextUtils.isEmpty(confirmPassword)) {
+            binding.passwordConfirm.setError("Required.");
+            valid = false;
+        } else {
+            binding.passwordConfirm.setError(null);
+        }
+
         return valid;
     }
 
-    private void signIn(String email, String password) {
-        Log.d(TAG, "signIn:" + email);
+    private void createAccount(String email, String password) {
+        Log.d(TAG, "createAccount:" + email);
         if (!validateForm()) {
             return;
         }
-
-
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(requireActivity(), task -> {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            Toast.makeText(getContext(), "Success!",
-                                    Toast.LENGTH_SHORT).show();
-                            NavHostFragment.findNavController(LoginFragment.this)
-                                    .navigate(R.id.action_LoginFragment_to_GroupsFragment);
+                            // Sign in success, go to login page
+                            NavHostFragment.findNavController(SignupFragment.this)
+                                    .navigate(R.id.action_SignupFragment_to_LoginFragment);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
+
+        });
     }
 
 }

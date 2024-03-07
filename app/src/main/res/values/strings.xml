@@ -2,19 +2,26 @@
     <string name="action_settings">Settings</string>
     <!-- Text For UI -->
     <string name="groups">Groups</string>
-    <string name="to_login">To Login</string>
+    <string name="signout">Sign Out</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="app_name">Room Mate</string>
-    <string name="username">Username</string>
+    <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="sign_up">New User? Sign Up here!</string>
+    <string name="sign_up"><u>New User? Sign Up here!</u></string>
     <string name="hello_world">
         Hello World!
     </string>
     <string name="welcome_text">
         Welcome to Room Mate! Sign in to get started!
     </string>
+    <string name="new_account">New Account</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create">Create</string>
+    <string name="exit">Exit</string>
+    <string name="signup">Sign Up</string>
 
 </resources>

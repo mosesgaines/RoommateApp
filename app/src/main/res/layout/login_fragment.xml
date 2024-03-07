@@ -59,13 +59,14 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:id="@+id/username"
+            android:id="@+id/email"
             android:background="@drawable/rounded_edit_text"
             android:drawableLeft="@drawable/ic_baseline_person_24"
             android:drawablePadding="8dp"
-            android:hint="@string/username"
+            android:hint="@string/email"
             android:textColor="@color/black"
             android:layout_marginTop="40dp"
+            android:paddingStart="10dp"
             />
 
             <EditText
@@ -78,6 +79,8 @@
                 android:hint="@string/password"
                 android:textColor="@color/black"
                 android:layout_marginTop="20dp"
+                android:inputType="textPassword"
+                android:paddingStart="10dp"
                 />
 
         <Button
@@ -99,6 +102,7 @@
             android:padding="8dp"
             android:text="@string/sign_up"
             android:textSize="14sp"
+
             android:textAlignment="center"
             android:id="@+id/signupText"
             android:textColor="@color/red"

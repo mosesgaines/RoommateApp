@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_LoginFragment_to_GroupsFragment"
             app:destination="@id/GroupsFragment" />
+        <action
+            android:id="@+id/action_LoginFragment_to_SignupFragment"
+            app:destination="@id/SignupFragment" />
     </fragment>
     <fragment
         android:id="@+id/GroupsFragment"
@@ -25,4 +28,15 @@
             android:id="@+id/action_GroupsFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/SignupFragment"
+        android:name="com.example.roommateapp.SignupFragment"
+        android:label="@string/signup"
+        tools:layout="@layout/groups_fragment">
+
+        <action
+            android:id="@+id/action_SignupFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
+    </fragment>
+
 </navigation>

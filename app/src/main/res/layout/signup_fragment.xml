@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/new_account"
+        android:textColor="@color/red"
+        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        />
+
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="start"-->
+<!--        android:layout_marginLeft="16dp"-->
+<!--        android:layout_marginRight="16dp"-->
+<!--        android:text="@string/email"-->
+<!--        android:textColor="#546E7A"-->
+<!--        android:textSize="16sp" />-->
+
+<!--    <EditText-->
+<!--        android:id="@+id/email"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="16dp"-->
+<!--        android:layout_marginRight="16dp"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:hint="@string/enter_email"-->
+<!--        android:maxLines="1"-->
+<!--        android:minHeight="48dp"-->
+<!--        android:textColorHint="#546E7A"-->
+<!--        android:autofillHints="username"/>-->
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/email"
+        android:background="@drawable/rounded_edit_text"
+        android:hint="@string/enter_email"
+        android:paddingStart="10dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        />
+
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="start"-->
+<!--        android:layout_marginLeft="16dp"-->
+<!--        android:layout_marginRight="16dp"-->
+<!--        android:text="@string/password"-->
+<!--        android:textColor="#546E7A"-->
+<!--        android:textSize="16sp" />-->
+
+<!--    <EditText-->
+<!--        android:id="@+id/password"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="16dp"-->
+<!--        android:layout_marginRight="16dp"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:hint="@string/enter_password"-->
+<!--        android:inputType="textPassword"-->
+<!--        android:maxLines="1"-->
+<!--        android:minHeight="48dp"-->
+<!--        android:textColorHint="#546E7A"-->
+<!--        android:autofillHints="password"/>-->
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/password"
+        android:background="@drawable/rounded_edit_text"
+        android:hint="@string/enter_password"
+        android:paddingStart="10dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:inputType="textPassword"
+        />
+
+
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="start"-->
+<!--        android:layout_marginLeft="16dp"-->
+<!--        android:layout_marginRight="16dp"-->
+<!--        android:labelFor="@+id/password_confirm"-->
+<!--        android:text="@string/confirm_password"-->
+<!--        android:textColor="#546E7A" />-->
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/password_confirm"
+        android:background="@drawable/rounded_edit_text"
+        android:hint="@string/confirm_password"
+        android:paddingStart="10dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:inputType="textPassword"
+        />
+
+    <Button
+        android:id="@+id/done_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/create"
+        android:backgroundTint="@color/red"/>
+
+    <Button
+        android:id="@+id/exit_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dip"
+        android:layout_marginRight="16dp"
+        android:text="@string/exit"
+        android:backgroundTint="@color/red"/>
+</LinearLayout>
