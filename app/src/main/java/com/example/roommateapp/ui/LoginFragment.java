@@ -1,4 +1,4 @@
-package com.example.roommateapp;
+package com.example.roommateapp.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,23 +6,28 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import android.util.Log;
 
-import com.example.roommateapp.databinding.GroupsFragmentBinding;
+import com.example.roommateapp.R;
+import com.example.roommateapp.databinding.LoginFragmentBinding;
 
-public class GroupsFragment extends Fragment {
 
-    private GroupsFragmentBinding binding;
+
+public class LoginFragment extends Fragment {
+
+    private LoginFragmentBinding binding;
+    private static final String TAG = "MainActivity";
+
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
+            Bundle savedInstanceState) {
 
-        binding = GroupsFragmentBinding.inflate(inflater, container, false);
+        binding = LoginFragmentBinding.inflate(inflater, container, false);
+        Log.d(TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle) called");
         return binding.getRoot();
 
     }
@@ -30,11 +35,11 @@ public class GroupsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
+        binding.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(GroupsFragment.this)
-                        .navigate(R.id.action_GroupsFragment_to_LoginFragment);
+                NavHostFragment.findNavController(LoginFragment.this)
+                        .navigate(R.id.action_LoginFragment_to_GroupsFragment);
             }
         });
     }

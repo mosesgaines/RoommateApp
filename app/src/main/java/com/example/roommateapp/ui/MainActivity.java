@@ -1,8 +1,9 @@
-package com.example.roommateapp;
+package com.example.roommateapp.ui;
 
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.roommateapp.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;

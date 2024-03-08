@@ -1,4 +1,4 @@
-package com.example.roommateapp;
+package com.example.roommateapp.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,25 +8,21 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import android.util.Log;
 
-import com.example.roommateapp.databinding.LoginFragmentBinding;
+import com.example.roommateapp.R;
+import com.example.roommateapp.databinding.GroupsFragmentBinding;
 
+public class GroupsFragment extends Fragment {
 
-
-public class LoginFragment extends Fragment {
-
-    private LoginFragmentBinding binding;
-    private static final String TAG = "MainActivity";
-
+    private GroupsFragmentBinding binding;
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+            Bundle savedInstanceState
+    ) {
 
-        binding = LoginFragmentBinding.inflate(inflater, container, false);
-        Log.d(TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle) called");
+        binding = GroupsFragmentBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
     }
@@ -34,11 +30,11 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.loginButton.setOnClickListener(new View.OnClickListener() {
+        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(LoginFragment.this)
-                        .navigate(R.id.action_LoginFragment_to_GroupsFragment);
+                NavHostFragment.findNavController(GroupsFragment.this)
+                        .navigate(R.id.action_GroupsFragment_to_LoginFragment);
             }
         });
     }
