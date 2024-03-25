@@ -1,4 +1,4 @@
-package com.example.roommateapp;
+package com.example.roommateapp.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.roommateapp.R;
 import com.example.roommateapp.databinding.GroupsFragmentBinding;
 import com.google.firebase.auth.FirebaseAuth;
 

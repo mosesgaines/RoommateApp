@@ -1,4 +1,4 @@
-package com.example.roommateapp;
+package com.example.roommateapp.ui;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,6 +12,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.roommateapp.R;
 import com.example.roommateapp.databinding.LoginFragmentBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
