@@ -87,6 +87,7 @@ public class UsersFragment extends Fragment {
         binding = null;
     }
 
+    //Deletes test user in the database
     private void delete() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -106,6 +107,7 @@ public class UsersFragment extends Fragment {
                 });
     }
 
+    //Updates the test user in the database
     private void update() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference testRef = db.collection("users").document("test");
@@ -113,7 +115,9 @@ public class UsersFragment extends Fragment {
                 .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
 
+    //Creates a new test user in the database
     private void create() {
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Create a new user with a first and last name
         Map<String, Object> user = new HashMap<>();
