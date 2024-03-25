@@ -97,7 +97,7 @@ public class Group {
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error writing document", e);
                     }
-                });;
+                });
     }
     public void addTaskList (TaskList taskList) {
         //Add task to task list and update group in db
