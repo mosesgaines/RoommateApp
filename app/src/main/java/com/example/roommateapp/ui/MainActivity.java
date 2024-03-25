@@ -46,12 +46,12 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-
+/*
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Create a new user with a first and last name
         Map<String, Object> user = new HashMap<>();
-        user.put("first", "James");
-        user.put("last", "Smith");
+        user.put("first", "John");
+        user.put("last", "Doe");
         user.put("born", 2002);
 
         // Add a new document with a generated ID
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 .add(user)
                 .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId()))
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
-
+*/
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
