@@ -73,6 +73,12 @@
             android:layout_height="wrap_content"
             android:text="@string/signout"
             android:backgroundTint="@color/red"/>
+            <Button
+                android:id="@+id/usersButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Users"
+                />
 
         </LinearLayout>
 

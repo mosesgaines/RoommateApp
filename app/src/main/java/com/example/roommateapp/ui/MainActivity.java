@@ -50,11 +50,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Create a new user with a first and last name
         Map<String, Object> user = new HashMap<>();
-        user.put("first", "Ada");
-        user.put("last", "Lovelace");
-        user.put("born", 1815);
-        user.put("first", "Moses");
-        user.put("last", "Gaines");
+        user.put("first", "James");
+        user.put("last", "Smith");
         user.put("born", 2002);
 
         // Add a new document with a generated ID

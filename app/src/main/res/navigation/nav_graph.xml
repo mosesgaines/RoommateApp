@@ -27,10 +27,13 @@
         <action
             android:id="@+id/action_GroupsFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
+        <action
+            android:id="@+id/action_GroupsFragment_to_UsersFragment"
+            app:destination="@id/UsersFragment" />
     </fragment>
     <fragment
         android:id="@+id/SignupFragment"
-        android:name="com.example.roommateapp.SignupFragment"
+        android:name="com.example.roommateapp.ui.SignupFragment"
         android:label="@string/signup"
         tools:layout="@layout/groups_fragment">
 
@@ -38,5 +41,10 @@
             android:id="@+id/action_SignupFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/UsersFragment"
+        android:name="com.example.roommateapp.ui.UsersFragment"
+        android:label="Users"
+        tools:layout="@layout/users_fragment"/>
 
 </navigation>

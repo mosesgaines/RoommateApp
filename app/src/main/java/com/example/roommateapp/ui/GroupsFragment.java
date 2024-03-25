@@ -13,17 +13,20 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.roommateapp.R;
 import com.example.roommateapp.databinding.GroupsFragmentBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class GroupsFragment extends Fragment {
 
     private GroupsFragmentBinding binding;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -46,6 +49,10 @@ public class GroupsFragment extends Fragment {
 
             NavHostFragment.findNavController(GroupsFragment.this)
                     .navigate(R.id.action_GroupsFragment_to_LoginFragment);
+        });
+
+        binding.usersButton.setOnClickListener(e -> {
+            NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_UsersFragment);
         });
     }
 
