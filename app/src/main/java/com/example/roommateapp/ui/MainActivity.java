@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +59,15 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
+        //db test model stuff
+        String name = "John Doe";
+        String email = "john@gmail.com";
+        User user = new User(name, email);
+        Group group = new Group("groupTest");
+        TaskList newList = new TaskList("ListTest");
+        User user2 = new User(name, email);
+        Group group2 = new Group("groupTest2");
+        TaskList newList2 = new TaskList("ListTest2");
 
 //        binding.fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
