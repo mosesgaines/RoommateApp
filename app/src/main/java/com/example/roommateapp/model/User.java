@@ -30,6 +30,7 @@ public class User {
     //private fields used to add info to database
     private long userID;
     private String name;
+    private String email;
     private ArrayList<String> groupIdList;
     private static final String TAG = "User";
     private DocumentReference userRef;
@@ -37,7 +38,7 @@ public class User {
     //private Location location;
 
     //Initializer method, sets id and name
-    public void initializeUser (String name) {
+    public User (String name, String email) {
         //Initialize User and get count of all users for userID
         userData  = new HashMap<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -59,8 +60,10 @@ public class User {
         //Initialize User data and add User to db
         this.groupIdList = new ArrayList<String>();
         this.name = name;
+        this.email = email;
         userData.put("groups", this.groupIdList);
         userData.put("name", this.name);
+        userData.put("email", this.email);
 
         db.collection("users").document(String.valueOf(this.userID)).set(this.userData).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -77,6 +80,14 @@ public class User {
         this.userRef = db.collection("users").document(String.valueOf(this.userID));
 
         //Location stuff once figured out
+    }
+
+    public User (long userID) {
+        this.userID = userID;
+
+        //Get info from database
+
+        //Convert info into name, list of groups, email
     }
     //Getter methods
     public long getUserID () {

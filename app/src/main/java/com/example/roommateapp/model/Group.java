@@ -37,7 +37,7 @@ public class Group {
     private Map<String, Object> groupData = new HashMap<>();
     private DocumentReference groupRef;
     //Initializer method, sets Id as well as name and initializes Lists
-    public void initializeGroup (String groupName) {
+    public Group (String groupName) {
         //Initialize database and get count of all groups for groupID
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("groups");

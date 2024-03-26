@@ -33,7 +33,7 @@ public class TaskList {
     private static final String TAG = "TaskList";
     private DocumentReference taskRef;
     //Initializer method, sets Id as well as name and initializes List
-    public void InitializeList(String name) {
+    public TaskList(String name) {
         //Initialize database and get count of all lists for listID
         listData  = new HashMap<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
