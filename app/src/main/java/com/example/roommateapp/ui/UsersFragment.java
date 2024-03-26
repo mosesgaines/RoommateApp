@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
@@ -19,8 +20,10 @@ import com.example.roommateapp.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -76,6 +79,7 @@ public class UsersFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        getTestUser();
         binding.createButton.setOnClickListener(e -> create());
         binding.deleteButton.setOnClickListener(e -> delete());
         binding.updateButton.setOnClickListener(e -> update());
@@ -87,6 +91,29 @@ public class UsersFragment extends Fragment {
         binding = null;
     }
 
+    private void getTestUser() {
+//        binding.userText.setText(db.collection("users").document("test").get().getResult().get("first").toString());
+//        db.collection("users").document("test").get().getResult().get("first");
+//        db.collection("users").document("test").get().toString()
+        DocumentReference docRef = db.collection("users").document("test");
+//        String result = "";
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    String text = document.get("first").toString() + " " +
+                            document.get("last").toString() + ": " +
+                            document.get("born").toString();
+                    binding.userText.setText(text);
+                } else {
+                    Log.d(TAG, "No such document");
+                }
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+            }
+        });
+    }
     private void delete() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -96,6 +123,7 @@ public class UsersFragment extends Fragment {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "User successfully deleted");
+                        binding.userText.setText("");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -109,7 +137,10 @@ public class UsersFragment extends Fragment {
     private void update() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference testRef = db.collection("users").document("test");
-        testRef.update("first", "Updated").addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot updated"))
+        testRef.update("first", "Updated").addOnSuccessListener(documentReference -> {
+                    Log.d(TAG, "DocumentSnapshot updated");
+                    getTestUser();
+                })
                 .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
     }
 
@@ -124,7 +155,10 @@ public class UsersFragment extends Fragment {
         // Add a new document with a generated ID
         db.collection("users").document("test")
                 .set(user)
-                .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: test"))
+                .addOnSuccessListener(documentReference -> {
+                    Log.d(TAG, "DocumentSnapshot added with ID: test");
+                    getTestUser();
+                })
                 .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
     }
 }
