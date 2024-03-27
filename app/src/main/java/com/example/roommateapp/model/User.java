@@ -1,5 +1,7 @@
 package com.example.roommateapp.model;
 
+import static com.example.roommateapp.model.HelperMethods.parseStringToList;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -21,7 +23,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.AggregateQuery;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -30,6 +34,7 @@ public class User {
     //private fields used to add info to database
     private long userID;
     private String name;
+    private String email;
     private ArrayList<String> groupIdList;
     private static final String TAG = "User";
     private DocumentReference userRef;
@@ -37,9 +42,12 @@ public class User {
     //private Location location;
 
     //Initializer method, sets id and name
-    public void initializeUser (String name) {
+    public User (String name, String email) {
         //Initialize User and get count of all users for userID
         userData  = new HashMap<>();
+        this.name = name;
+        this.email = email;
+        this.groupIdList = new ArrayList<String>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("users");
         AggregateQuery countQuery = query.count();
@@ -51,18 +59,89 @@ public class User {
                     AggregateQuerySnapshot snapshot = task.getResult();
                     userID = snapshot.getCount();
                     Log.d(TAG, "Count: " + snapshot.getCount());
+                    userData.put("groups", groupIdList);
+                    userData.put("name", name);
+                    userData.put("email", email);
+
+                    db.collection("users").document(String.valueOf(userID)).set(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error writing document", e);
+                                }
+                            });
+                    userRef = db.collection("users").document(String.valueOf(userID));
                 } else {
                     Log.d(TAG, "Count failed: ", task.getException());
                 }
             }
         });
-        //Initialize User data and add User to db
-        this.groupIdList = new ArrayList<String>();
-        this.name = name;
-        userData.put("groups", this.groupIdList);
-        userData.put("name", this.name);
 
-        db.collection("users").document(String.valueOf(this.userID)).set(this.userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+        //Location stuff once figured out
+    }
+
+    public User (long userID) {
+        this.userID = userID;
+        this.groupIdList = new ArrayList<String>();
+
+        //Get info from database
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        this.userRef = db.collection("users").document(String.valueOf(this.userID));
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot user = task.getResult();
+                    if (user.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + user.getData());
+                    } else {
+                        Log.d(TAG, "No such user");
+                    }
+
+                    //convert info into name, list of groups, email
+                    userData = user.getData();
+                    assert userData != null;
+                    name = (String) userData.get("name");
+                    email = (String) userData.get("email");
+                    String groupIdString = userData.get("groups").toString();
+                    Log.d(TAG, "groupId data: " + groupIdString);
+                    groupIdList = parseStringToList(groupIdString);
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
+
+        //Convert info into name, list of groups, email
+
+    }
+    //Getter methods
+    public long getUserID () {
+        return this.userID;
+    }
+
+    public String getName () {
+        return this.name;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public ArrayList<String> getGroups() { return this.groupIdList; }
+
+    //Method to edit the email of the user
+    public void changeEmail(String email) {
+        //Change email and update in db
+        this.email = email;
+
+        this.userRef.update("email", this.email).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
@@ -74,17 +153,6 @@ public class User {
                         Log.w(TAG, "Error writing document", e);
                     }
                 });
-        this.userRef = db.collection("users").document(String.valueOf(this.userID));
-
-        //Location stuff once figured out
-    }
-    //Getter methods
-    public long getUserID () {
-        return this.userID;
-    }
-
-    public String getName () {
-        return this.name;
     }
 
     //Method to edit the name of the user
@@ -138,6 +206,8 @@ public class User {
                     }
                 });
     }
+
+
 
 
 }

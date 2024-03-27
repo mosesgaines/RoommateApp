@@ -1,5 +1,7 @@
 package com.example.roommateapp.model;
 
+import static com.example.roommateapp.model.HelperMethods.parseStringToList;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import com.google.firebase.firestore.AggregateQuery;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -37,8 +40,13 @@ public class Group {
     private Map<String, Object> groupData = new HashMap<>();
     private DocumentReference groupRef;
     //Initializer method, sets Id as well as name and initializes Lists
-    public void initializeGroup (String groupName) {
+    public Group (String groupName) {
         //Initialize database and get count of all groups for groupID
+        this.name = groupName;
+        this.userList = new ArrayList<User>();
+        this.taskList = new ArrayList<TaskList>();
+        this.userIDList = new ArrayList<String>();
+        this.taskIDList = new ArrayList<String>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("groups");
         AggregateQuery countQuery = query.count();
@@ -50,36 +58,70 @@ public class Group {
                     AggregateQuerySnapshot snapshot = task.getResult();
                     groupID = snapshot.getCount();
                     Log.d(TAG, "Count: " + snapshot.getCount());
-                } else {
+                    //Initialize fields for db
+
+                    groupData.put("lists", taskIDList);
+                    groupData.put("users", userIDList);
+                    groupData.put("name", name);
+                    //Add group to db
+                    db.collection("groups").document(String.valueOf(groupID)).set(groupData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error writing document", e);
+                                }
+                            });
+                    groupRef = db.collection("groups").document(String.valueOf(groupID));
+                }
+                else {
                     Log.d(TAG, "Count failed: ", task.getException());
                 }
             }
         });
+    }
 
-        //Initialize fields for db
+    public Group (long groupId) {
+        this.groupID = groupId;
         this.userList = new ArrayList<User>();
         this.taskList = new ArrayList<TaskList>();
         this.userIDList = new ArrayList<String>();
         this.taskIDList = new ArrayList<String>();
-        this.name = groupName;
-        groupData.put("groupID", this.groupID);
-        groupData.put("lists", this.taskIDList);
-        groupData.put("users", this.userIDList);
-        groupData.put("name", this.name);
-        //Add group to db
-        db.collection("groups").document(String.valueOf(this.groupID)).set(this.groupData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
+
+        //Get info from database
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        this.groupRef = db.collection("users").document(String.valueOf(this.groupID));
+        groupRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot group = task.getResult();
+                    if (group.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + group.getData());
+                    } else {
+                        Log.d(TAG, "No such user");
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
-                    }
-                });
-        this.groupRef = db.collection("groups").document(String.valueOf(this.groupID));
+
+                    //convert info into name, list of groups, email
+                    groupData = group.getData();
+                    assert groupData != null;
+                    name = (String) groupData.get("name");
+                    String userIdString = groupData.get("users").toString();
+                    Log.d(TAG, "userId data: " + userIdString);
+                    userIDList = parseStringToList(userIdString);
+                    String listIDString = groupData.get("lists").toString();
+                    Log.d(TAG, "listId data: " + listIDString);
+                    taskIDList = parseStringToList(listIDString);
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
     }
     //Methods for adding to and removing from Lists
     public void addUser (User user) {

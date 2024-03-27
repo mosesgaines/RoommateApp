@@ -1,5 +1,7 @@
 package com.example.roommateapp.model;
 
+import static com.example.roommateapp.model.HelperMethods.parseStringToList;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import com.google.firebase.firestore.AggregateQuery;
 import com.google.firebase.firestore.AggregateQuerySnapshot;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -33,9 +36,11 @@ public class TaskList {
     private static final String TAG = "TaskList";
     private DocumentReference taskRef;
     //Initializer method, sets Id as well as name and initializes List
-    public void InitializeList(String name) {
+    public TaskList(String name) {
         //Initialize database and get count of all lists for listID
         listData  = new HashMap<>();
+        this.name = name;
+        this.items = new ArrayList<String>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("lists");
         AggregateQuery countQuery = query.count();
@@ -47,29 +52,61 @@ public class TaskList {
                     AggregateQuerySnapshot snapshot = task.getResult();
                     listID = snapshot.getCount();
                     Log.d(TAG, "Count: " + snapshot.getCount());
+                    //Initialize data and add List to db
+
+                    listData.put("name", name);
+                    listData.put("items", items);
+                    db.collection("lists").document(String.valueOf(listID)).set(listData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error writing document", e);
+                                }
+                            });
+                    taskRef = db.collection("lists").document(String.valueOf(listID));
                 } else {
                     Log.d(TAG, "Count failed: ", task.getException());
                 }
             }
         });
-        //Initialize data and add List to db
-        this.name = name;
+
+    }
+
+    public TaskList(long listId) {
+        this.listID = listId;
         this.items = new ArrayList<String>();
-        listData.put("name", this.name);
-        listData.put("items", this.items);
-        db.collection("lists").document(String.valueOf(this.listID)).set(this.listData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error writing document", e);
-                    }
-                });
+
+        //Get info from database
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         this.taskRef = db.collection("lists").document(String.valueOf(this.listID));
+
+        taskRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot taskList = task.getResult();
+                    if (taskList.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + taskList.getData());
+                    } else {
+                        Log.d(TAG, "No such user");
+                    }
+
+                    //convert info into name, list of groups, email
+                    listData = taskList.getData();
+                    assert listData != null;
+                    name = (String) listData.get("name");
+                    String itemString = listData.get("items").toString();
+                    Log.d(TAG, "item data: " + itemString);
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
     //Methods for adding to and removing from List
     public void addItem (String item) {
