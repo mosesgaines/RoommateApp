@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.roommateapp.R;
 import com.example.roommateapp.databinding.SignupFragmentBinding;
+import com.example.roommateapp.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SignupFragment extends Fragment {
@@ -50,9 +51,11 @@ public class SignupFragment extends Fragment {
         binding.doneButton.setOnClickListener(e -> {
             String email = binding.email.getText().toString();
             String password = binding.password.getText().toString();
+            String name = binding.fullName.getText().toString();
             String confirmPassword = binding.passwordConfirm.getText().toString();
             if (password.equals(confirmPassword)) {
                 createAccount(email, password);
+                User newUser = new User(name, email);
             } else {
                 Toast.makeText(getContext(), "Passwords do not match.",
                         Toast.LENGTH_SHORT).show();
