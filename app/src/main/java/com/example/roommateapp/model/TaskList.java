@@ -35,6 +35,8 @@ public class TaskList {
     private Map<String, Object> listData;
     private static final String TAG = "TaskList";
     private DocumentReference taskRef;
+
+    public TaskList() {}
     //Initializer method, sets Id as well as name and initializes List
     public TaskList(String name) {
         //Initialize database and get count of all lists for listID

@@ -41,6 +41,9 @@ public class User {
     private Map<String, Object> userData;
     //private Location location;
 
+    //empty constructor for firebase
+    public User() {}
+
     //Initializer method, sets id and name
     public User (String name, String email) {
         //Initialize User and get count of all users for userID

@@ -2,7 +2,9 @@
     <string name="action_settings">Settings</string>
     <!-- Text For UI -->
     <string name="groups">Groups</string>
+    <string name="lists">Lists</string>
     <string name="signout">Sign Out</string>
+    <string name="gps">GPS</string>
     <string name="update">Update</string>
     <string name="delete">Delete</string>
     <string name="next">Next</string>

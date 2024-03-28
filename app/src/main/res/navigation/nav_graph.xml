@@ -28,8 +28,8 @@
             android:id="@+id/action_GroupsFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
         <action
-            android:id="@+id/action_GroupsFragment_to_UsersFragment"
-            app:destination="@id/UsersFragment" />
+            android:id="@+id/action_GroupsFragment_to_ListFragment"
+            app:destination="@id/ListFragment" />
     </fragment>
     <fragment
         android:id="@+id/SignupFragment"
@@ -42,9 +42,11 @@
             app:destination="@id/LoginFragment" />
     </fragment>
     <fragment
-        android:id="@+id/UsersFragment"
-        android:name="com.example.roommateapp.ui.UsersFragment"
-        android:label="Users"
-        tools:layout="@layout/users_fragment"/>
+        android:id="@+id/ListFragment"
+        android:name="com.example.roommateapp.ui.ListFragment"
+        android:label="List"
+        tools:layout="@layout/list_fragment">
+
+    </fragment>
 
 </navigation>

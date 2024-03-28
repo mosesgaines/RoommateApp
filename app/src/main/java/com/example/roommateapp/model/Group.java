@@ -39,6 +39,8 @@ public class Group {
     private String name;
     private Map<String, Object> groupData = new HashMap<>();
     private DocumentReference groupRef;
+
+    public Group() {}
     //Initializer method, sets Id as well as name and initializes Lists
     public Group (String groupName) {
         //Initialize database and get count of all groups for groupID

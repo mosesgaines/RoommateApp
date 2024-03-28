@@ -1,88 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     tools:context=".ui.GroupsFragment">
 
 
+    <Button
+        android:id="@+id/listButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/lists"
+        android:backgroundTint="@color/red"
+        android:layout_toStartOf="@id/gpsButton"
+        />
+    <Button
+        android:id="@+id/gpsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/gps"
+        android:backgroundTint="@color/red"
+        android:layout_centerHorizontal="true"/>
+    <Button
+        android:id="@+id/signoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/signout"
+        android:layout_toEndOf="@id/gpsButton"
+        android:backgroundTint="@color/red"/>
+    <ListView
+        android:id="@+id/groupsList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:drawSelectorOnTop="false"
+        android:layout_above="@id/listButton"
+        />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/group_1_bg"
-                android:layout_marginBottom="5dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Group1"
-                    android:textStyle="bold"
-                    android:textSize="23sp"
-                    android:textColor="@color/white"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:textAlignment="center"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/group_2_bg"
-                android:layout_marginBottom="10dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Group2"
-                    android:textStyle="bold"
-                    android:textSize="23sp"
-                    android:textColor="@color/white"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:textAlignment="center"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/group_3_bg"
-                android:layout_marginBottom="10dp">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Group3"
-                    android:textStyle="bold"
-                    android:textSize="23sp"
-                    android:textColor="@color/white"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:textAlignment="center"
-                    />
-            </LinearLayout>
-        <Button
-            android:id="@+id/signoutButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/signout"
-            android:backgroundTint="@color/red"/>
-            <Button
-                android:id="@+id/usersButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Users"
-                />
 
-        </LinearLayout>
+<!--    <TextView-->
+<!--        android:id="@+id/groupText"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintStart_toEndOf="@id/deleteButton"/>-->
+<!--        <Button-->
+<!--            android:id="@+id/deleteButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/delete"-->
+<!--            app:layout_constraintTop_toTopOf="@id/groupsList"/>-->
+<!--        <Button-->
+    <!--        android:id="@+id/updateButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/update" />-->
+    <!--    <Button-->
+    <!--        android:id="@+id/createButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/create" />-->
+
+</RelativeLayout>
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:orientation="vertical"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    tools:context=".ui.GroupsFragment">-->
 
 
 
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            android:gravity="center"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:layout_marginRight="10dp">-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@drawable/group_1_bg"-->
+<!--                android:layout_marginBottom="5dp">-->
+<!--                <ListView-->
+<!--                    android:id="@+id/groupText"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Group1"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="23sp"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:textAlignment="center"-->
+<!--                    />-->
+<!--            </LinearLayout>-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@drawable/group_2_bg"-->
+<!--                android:layout_marginBottom="10dp">-->
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Group2"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="23sp"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:textAlignment="center"-->
+<!--                    />-->
+<!--            </LinearLayout>-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@drawable/group_3_bg"-->
+<!--                android:layout_marginBottom="10dp">-->
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Group3"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textSize="23sp"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:textAlignment="center"-->
+<!--                    />-->
+<!--            </LinearLayout>-->
+<!--        <Button-->
+<!--            android:id="@+id/signoutButton"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/signout"-->
+<!--            android:backgroundTint="@color/red"/>-->
+<!--            <Button-->
+<!--                android:id="@+id/usersButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Users"-->
+<!--                />-->
 
-</ScrollView>
+<!--        </LinearLayout>-->
+
+
+
+
+<!--</RelativeLayout>-->
