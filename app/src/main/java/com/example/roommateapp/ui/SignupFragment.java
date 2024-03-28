@@ -69,6 +69,14 @@ public class SignupFragment extends Fragment {
     private boolean validateForm() {
         boolean valid = true;
 
+        String name = binding.fullName.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            binding.fullName.setError("Required.");
+            valid = false;
+        } else {
+            binding.fullName.setError(null);
+        }
+
         String email = binding.email.getText().toString();
         if (TextUtils.isEmpty(email)) {
             binding.email.setError("Required.");
