@@ -1,5 +1,7 @@
 package com.example.roommateapp.model;
 
+import static com.example.roommateapp.model.HelperMethods.getNextGroupId;
+import static com.example.roommateapp.model.HelperMethods.incrementGroupId;
 import static com.example.roommateapp.model.HelperMethods.parseStringToList;
 
 import android.util.Log;
@@ -47,6 +49,8 @@ public class Group {
         this.taskList = new ArrayList<TaskList>();
         this.userIDList = new ArrayList<String>();
         this.taskIDList = new ArrayList<String>();
+        this.groupID = getNextGroupId();
+        incrementGroupId();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("groups");
         AggregateQuery countQuery = query.count();
@@ -56,7 +60,6 @@ public class Group {
                 if (task.isSuccessful()) {
                     // Count fetched successfully
                     AggregateQuerySnapshot snapshot = task.getResult();
-                    groupID = snapshot.getCount();
                     Log.d(TAG, "Count: " + snapshot.getCount());
                     //Initialize fields for db
 
@@ -85,42 +88,24 @@ public class Group {
         });
     }
 
-    public Group (long groupId) {
+    public Group (long groupId, DocumentSnapshot group, DocumentReference ref) {
         this.groupID = groupId;
         this.userList = new ArrayList<User>();
         this.taskList = new ArrayList<TaskList>();
         this.userIDList = new ArrayList<String>();
         this.taskIDList = new ArrayList<String>();
+        this.groupRef = ref;
 
-        //Get info from database
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        this.groupRef = db.collection("users").document(String.valueOf(this.groupID));
-        groupRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot group = task.getResult();
-                    if (group.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + group.getData());
-                    } else {
-                        Log.d(TAG, "No such user");
-                    }
-
-                    //convert info into name, list of groups, email
-                    groupData = group.getData();
-                    assert groupData != null;
-                    name = (String) groupData.get("name");
-                    String userIdString = groupData.get("users").toString();
-                    Log.d(TAG, "userId data: " + userIdString);
-                    userIDList = parseStringToList(userIdString);
-                    String listIDString = groupData.get("lists").toString();
-                    Log.d(TAG, "listId data: " + listIDString);
-                    taskIDList = parseStringToList(listIDString);
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
+        //convert info into name, list of groups, email
+        groupData = group.getData();
+        assert groupData != null;
+        name = (String) groupData.get("name");
+        String userIdString = groupData.get("users").toString();
+        Log.d(TAG, "userId data: " + userIdString);
+        userIDList = parseStringToList(userIdString);
+        String listIDString = groupData.get("lists").toString();
+        Log.d(TAG, "listId data: " + listIDString);
+        taskIDList = parseStringToList(listIDString);
 
     }
     //Methods for adding to and removing from Lists
