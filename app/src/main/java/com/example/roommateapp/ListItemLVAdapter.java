@@ -11,15 +11,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.roommateapp.model.TaskList;
+import com.example.roommateapp.ui.ListItemFragment;
 
 import java.util.ArrayList;
 
 public class ListItemLVAdapter extends ArrayAdapter<String> {
 
-    public ListItemLVAdapter(Context context, ArrayList<String> tasksArrayList) {
+    private ListItemFragment listItemFragment;
+
+    public ListItemLVAdapter(Context context, ArrayList<String> tasksArrayList, ListItemFragment listItemFragment) {
         super(context, 0, tasksArrayList);
+        this.listItemFragment = listItemFragment;
     }
 
     @NonNull
@@ -42,7 +47,7 @@ public class ListItemLVAdapter extends ArrayAdapter<String> {
         // initializing our UI components of list view item.
 
         TextView text = convertView.findViewById(R.id.listViewText);
-
+        Button update = convertView.findViewById(R.id.updateButton);
 
         // after initializing our items we are
 
@@ -79,6 +84,7 @@ public class ListItemLVAdapter extends ArrayAdapter<String> {
 //            Group selectedGroup = new Group(0);
 //            selectedGroup.changeName("updated test");
 //        });
+        update.setOnClickListener(e -> NavHostFragment.findNavController(listItemFragment).navigate(R.id.action_ListItemFragment_to_EditTaskFragment));
 
         return convertView;
 

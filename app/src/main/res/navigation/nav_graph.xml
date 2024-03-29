@@ -30,6 +30,9 @@
         <action
             android:id="@+id/action_GroupsFragment_to_ListFragment"
             app:destination="@id/ListFragment" />
+        <action
+            android:id="@+id/action_GroupsFragment_to_UsersFragment"
+            app:destination="@id/UsersFragment" />
     </fragment>
     <fragment
         android:id="@+id/SignupFragment"
@@ -56,6 +59,9 @@
         <action
             android:id="@+id/action_ListFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
+        <action
+            android:id="@+id/action_ListFragment_to_EditListFragment"
+            app:destination="@id/EditListFragment" />
     </fragment>
     <fragment
         android:id="@+id/ListItemFragment"
@@ -68,6 +74,48 @@
             app:destination="@id/ListFragment" />
         <action
             android:id="@+id/action_ListItemFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
+        <action
+            android:id="@+id/action_ListItemFragment_to_EditTaskFragment"
+            app:destination="@id/EditTaskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/UsersFragment"
+        android:name="com.example.roommateapp.ui.UsersFragment"
+        android:label="@string/users"
+        tools:layout="@layout/users_fragment">
+
+        <action
+            android:id="@+id/action_UsersFragment_to_GroupsFragment"
+            app:destination="@id/GroupsFragment" />
+        <action
+            android:id="@+id/action_UserFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/EditListFragment"
+        android:name="com.example.roommateapp.ui.EditListFragment"
+        android:label="@string/update_list"
+        tools:layout="@layout/edit_list_fragment">
+
+        <action
+            android:id="@+id/action_EditListFragment_to_ListFragment"
+            app:destination="@id/ListFragment" />
+        <action
+            android:id="@+id/action_EditListFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/EditTaskFragment"
+        android:name="com.example.roommateapp.ui.EditTaskFragment"
+        android:label="@string/update_task"
+        tools:layout="@layout/edit_list_fragment">
+
+        <action
+            android:id="@+id/action_EditTaskFragment_to_ListItemFragment"
+            app:destination="@id/ListItemFragment" />
+        <action
+            android:id="@+id/action_EditTaskFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
     </fragment>
 </navigation>

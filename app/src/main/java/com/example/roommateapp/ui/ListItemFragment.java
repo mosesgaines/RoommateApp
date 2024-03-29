@@ -68,6 +68,7 @@ public class ListItemFragment extends Fragment {
 
             NavHostFragment.findNavController(ListItemFragment.this)
                     .navigate(R.id.action_ListItemFragment_to_LoginFragment);
+
         });
 //
 //        binding.usersButton.setOnClickListener(e -> NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_UsersFragment));
@@ -112,7 +113,7 @@ public class ListItemFragment extends Fragment {
                             mTasks.addAll(tList.getItems());
                         }
                         // after that we are passing our array list to our adapter class.
-                        ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks);
+                        ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks, this);
                         // after passing this array list to our adapter
                         // class we are setting our adapter to our list view.
                         listLV.setAdapter(adapter);

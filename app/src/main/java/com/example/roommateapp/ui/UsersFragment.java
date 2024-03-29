@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,8 +14,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.roommateapp.GroupsLVAdapter;
+import com.example.roommateapp.R;
+import com.example.roommateapp.UserLVAdapter;
 import com.example.roommateapp.databinding.UsersFragmentBinding;
 import com.example.roommateapp.model.Group;
+import com.example.roommateapp.model.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,7 +43,7 @@ public class UsersFragment extends Fragment {
     private UsersFragmentBinding binding;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private ArrayList<Group> mUserList;
+    private ArrayList<User> mUserList;
     ListView userLV;
 
     private static final String TAG = "UsersFragment";
@@ -52,12 +56,6 @@ public class UsersFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mUserList = new ArrayList<>();
-//        mUserList.add("applesssssssssssssssssssssssssssssssssssssssssssssssssssssss");
-
-//        mUserAdapter = new UsersLVAdapter(getActivity(), mUserList);
-//        userLV.setAdapter(mUserAdapter);
-
-
     }
 
     private void loadDatainListview() {
@@ -66,7 +64,7 @@ public class UsersFragment extends Fragment {
 
         // firestore using collection in android.
 
-        db.collection("groups").get()
+        db.collection("users").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     // after getting the data we are calling on success method
                     // and inside this method we are checking if the received
@@ -78,16 +76,16 @@ public class UsersFragment extends Fragment {
                         for (DocumentSnapshot d : list) {
                             // after getting this list we are passing
                             // that list to our object class.
-                            Group group = d.toObject(Group.class);
+                            User user = d.toObject(User.class);
                             // after getting data from Firebase we are
                             // storing that data in our array list
-                            mUserList.add(group);
+                            mUserList.add(user);
                         }
                         // after that we are passing our array list to our adapter class.
-//                        GroupsLVAdapter adapter = new GroupsLVAdapter(getActivity().getApplicationContext(), mUserList, this);
+                        UserLVAdapter adapter = new UserLVAdapter(getActivity().getApplicationContext(), mUserList);
                         // after passing this array list to our adapter
                         // class we are setting our adapter to our list view.
-//                        userLV.setAdapter(adapter);
+                        userLV.setAdapter(adapter);
                     } else {
                         // if the snapshot is empty we are displaying a toast message.
                         Toast.makeText(UsersFragment.this.getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
@@ -114,15 +112,21 @@ public class UsersFragment extends Fragment {
         userLV = binding.usersList;
         loadDatainListview();
 
+        binding.signoutButton.setOnClickListener(e -> {
 
-//        users.
-//        User test = new User(0);
-//        mUserList.add(test);
-//        getTestUser();
-//        loadDatainListview();
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, mUserList);
-//        CollectionReference users = db.collection("users").get();
-//        userLV.setAdapter(adapter);
+            signOut();
+
+            NavHostFragment.findNavController(UsersFragment.this)
+                    .navigate(R.id.action_UserFragment_to_LoginFragment);
+        });
+
+        binding.groupsButton.setOnClickListener(e -> NavHostFragment.findNavController(UsersFragment.this).navigate(R.id.action_UsersFragment_to_GroupsFragment));
+
+        /** Set edit text to whatever the name in the DB is **/
+        binding.groupName.setText("Group Name in DB");
+
+        /** Make button save name change **/
+
 
         return binding.getRoot();
 
@@ -143,33 +147,11 @@ public class UsersFragment extends Fragment {
         binding = null;
     }
 
-//    private void getTestUser() {
-////        binding.userText.setText(db.collection("users").document("test").get().getResult().get("first").toString());
-////        db.collection("users").document("test").get().getResult().get("first");
-////        db.collection("users").document("test").get().toString()
-//        DocumentReference docRef = db.collection("users").document("0");
-//        ArrayAdapter<User> adapter = new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, mUserList);
-////        String result = "";
-//        docRef.get().addOnCompleteListener(task -> {
-//            if (task.isSuccessful()) {
-//                DocumentSnapshot document = task.getResult();
-//                if (document.exists()) {
-//                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-////                    String text = document.get("first").toString() + " " +
-////                            document.get("last").toString() + ": " +
-////                            document.get("born").toString();
-////                    binding.userText.setText(text);
-////                    mUserList.add(document.get());
-//                    userLV.setAdapter(adapter);
-//
-//                } else {
-//                    Log.d(TAG, "No such document");
-//                }
-//            } else {
-//                Log.d(TAG, "get failed with ", task.getException());
-//            }
-//        });
-//    }
+    private void signOut() {
+        mAuth.signOut();
+        Toast.makeText(getContext(), "Successful Sign Out.",
+                Toast.LENGTH_SHORT).show();
+    }
 
     //Deletes test user in the database
     private void delete() {

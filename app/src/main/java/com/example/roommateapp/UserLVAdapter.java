@@ -5,33 +5,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.roommateapp.model.TaskList;
-import com.example.roommateapp.ui.ListFragment;
+import com.example.roommateapp.model.User;
 
 import java.util.ArrayList;
 
-public class ListsLVAdapter extends ArrayAdapter<TaskList> {
+public class UserLVAdapter extends ArrayAdapter<User> {
 
-    private ListFragment listFragment;
-    public ListsLVAdapter(Context context, ArrayList<TaskList> listsArrayList, ListFragment listsFragment) {
-        super(context, 0, listsArrayList);
-        this.listFragment = listsFragment;
+    public UserLVAdapter(Context context, ArrayList<User> userArrayList) {
+        super(context, 0, userArrayList);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view_user, parent, false);
         }
 
         // after inflating an item of listview item
@@ -40,14 +34,13 @@ public class ListsLVAdapter extends ArrayAdapter<TaskList> {
 
         // our modal class.
 
-        TaskList tList = getItem(position);
+        User user = getItem(position);
 
 
 
         // initializing our UI components of list view item.
 
         TextView text = convertView.findViewById(R.id.listViewText);
-        Button update = convertView.findViewById(R.id.updateButton);
 
 
         // after initializing our items we are
@@ -56,7 +49,7 @@ public class ListsLVAdapter extends ArrayAdapter<TaskList> {
 
         // below line is use to set data to our text view.
 
-        text.setText(tList.getName());
+        text.setText(user.getName());
 
 
 
@@ -77,12 +70,9 @@ public class ListsLVAdapter extends ArrayAdapter<TaskList> {
 
             // we are displaying a toast message.
 
-            Toast.makeText(getContext(), "Item clicked is : " + tList.getName(), Toast.LENGTH_SHORT).show();
-            NavHostFragment.findNavController(listFragment).navigate(R.id.action_ListFragment_to_ListItemFragment);
+            Toast.makeText(getContext(), "Item clicked is : " + user.getName(), Toast.LENGTH_SHORT).show();
 
         });
-
-        update.setOnClickListener(e -> NavHostFragment.findNavController(listFragment).navigate(R.id.action_ListFragment_to_EditListFragment));
 
 //        delete.setOnClickListener(b -> {
 //            Group selectedGroup = new Group(0);
@@ -92,4 +82,5 @@ public class ListsLVAdapter extends ArrayAdapter<TaskList> {
         return convertView;
 
     }
+
 }

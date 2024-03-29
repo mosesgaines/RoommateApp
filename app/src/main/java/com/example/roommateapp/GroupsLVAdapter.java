@@ -51,6 +51,7 @@ public class GroupsLVAdapter extends ArrayAdapter<Group> {
         // initializing our UI components of list view item.
 
         TextView text = convertView.findViewById(R.id.listViewText);
+        Button update = convertView.findViewById(R.id.updateButton);
         Button delete = convertView.findViewById(R.id.deleteButton);
 
 
@@ -85,10 +86,9 @@ public class GroupsLVAdapter extends ArrayAdapter<Group> {
             NavHostFragment.findNavController(groupsFragment).navigate(R.id.action_GroupsFragment_to_ListFragment);
         });
 
-//        delete.setOnClickListener(b -> {
-//            Group selectedGroup = new Group(0);
-//            selectedGroup.changeName("updated test");
-//        });
+        update.setOnClickListener(b -> {
+            NavHostFragment.findNavController(groupsFragment).navigate(R.id.action_GroupsFragment_to_UsersFragment);
+        });
 
         return convertView;
 
