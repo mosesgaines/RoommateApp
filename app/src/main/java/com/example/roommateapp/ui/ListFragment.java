@@ -4,14 +4,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.roommateapp.GroupsLVAdapter;
 import com.example.roommateapp.ListsLVAdapter;
+import com.example.roommateapp.R;
 import com.example.roommateapp.databinding.ListFragmentBinding;
 import com.example.roommateapp.model.Group;
 import com.example.roommateapp.model.TaskList;
@@ -28,7 +31,7 @@ public class ListFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ArrayList<TaskList> mTaskList;
-    ListView listLV;
+    private ListView listLV;
 
 
     @Override
@@ -55,13 +58,14 @@ public class ListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        binding.signoutButton.setOnClickListener(e -> {
-//
-//            signOut();
-//
-//            NavHostFragment.findNavController(GroupsFragment.this)
-//                    .navigate(R.id.action_GroupsFragment_to_LoginFragment);
-//        });
+        binding.groupsButton.setOnClickListener(e -> NavHostFragment.findNavController(ListFragment.this).navigate(R.id.action_ListFragment_to_GroupsFragment));
+        binding.signoutButton.setOnClickListener(e -> {
+
+            signOut();
+
+            NavHostFragment.findNavController(ListFragment.this)
+                    .navigate(R.id.action_ListFragment_to_LoginFragment);
+        });
 //
 //        binding.usersButton.setOnClickListener(e -> NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_UsersFragment));
     }
@@ -84,7 +88,21 @@ public class ListFragment extends Fragment {
 
         // firestore using collection in android.
 
-        db.collection("groups").get()
+        // working on this so that I can filter out lists for specific group clicked
+        // can delete if we get it working another way
+        db.collection("groups").get().addOnSuccessListener(snapshots -> {
+            if (!snapshots.isEmpty()) {
+                // if the snapshot is not empty we are hiding
+                // our progress bar and adding our data in a list.
+                List<DocumentSnapshot> groups = snapshots.getDocuments();
+                for (DocumentSnapshot d : groups) {
+                    Group group = d.toObject(Group.class);
+                    ArrayList<String> lists;
+                }
+            }
+        });
+
+        db.collection("lists").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     // after getting the data we are calling on success method
                     // and inside this method we are checking if the received
@@ -100,12 +118,17 @@ public class ListFragment extends Fragment {
                             // after getting data from Firebase we are
                             // storing that data in our array list
                             mTaskList.add(tList);
+
+//                            for (String task : tList.getItems()) {
+//                                mTaskList.add(task);
+//                            }
                         }
                         // after that we are passing our array list to our adapter class.
-                        ListsLVAdapter adapter = new ListsLVAdapter(getActivity().getApplicationContext(), mTaskList);
+                        ListsLVAdapter adapter = new ListsLVAdapter(getActivity().getApplicationContext(), mTaskList, this);
                         // after passing this array list to our adapter
                         // class we are setting our adapter to our list view.
                         listLV.setAdapter(adapter);
+//                        listLV.setAdapter(testAdapter);
                     } else {
                         // if the snapshot is empty we are displaying a toast message.
                         Toast.makeText(ListFragment.this.getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();

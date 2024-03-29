@@ -1,4 +1,5 @@
 package com.example.roommateapp;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,48 +11,37 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.roommateapp.model.Group;
-import com.example.roommateapp.ui.GroupsFragment;
+import com.example.roommateapp.model.TaskList;
 
 import java.util.ArrayList;
 
-public class GroupsLVAdapter extends ArrayAdapter<Group> {
+public class ListItemLVAdapter extends ArrayAdapter<String> {
 
-    private GroupsFragment groupsFragment;
-
-    public GroupsLVAdapter(Context context, ArrayList<Group> userArrayList, GroupsFragment groupsFragment) {
-        super(context, 0, userArrayList);
-        this.groupsFragment = groupsFragment;
+    public ListItemLVAdapter(Context context, ArrayList<String> tasksArrayList) {
+        super(context, 0, tasksArrayList);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//        View listitemView = convertView;
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view_item, parent, false);
         }
 
-//        User user = getItem(position);
-//        TextView textUser = listitemView.findViewById(R.id.usersText);
-//        textUser.setText(user.getName());
         // after inflating an item of listview item
 
         // we are getting data from array list inside
 
         // our modal class.
 
-        Group group = getItem(position);
+        String task = getItem(position);
 
 
 
         // initializing our UI components of list view item.
 
         TextView text = convertView.findViewById(R.id.listViewText);
-        Button delete = convertView.findViewById(R.id.deleteButton);
 
 
         // after initializing our items we are
@@ -60,7 +50,7 @@ public class GroupsLVAdapter extends ArrayAdapter<Group> {
 
         // below line is use to set data to our text view.
 
-        text.setText(group.getName());
+        text.setText(task);
 
 
 
@@ -81,8 +71,8 @@ public class GroupsLVAdapter extends ArrayAdapter<Group> {
 
             // we are displaying a toast message.
 
-            Toast.makeText(getContext(), "Item clicked is : " + group.getName(), Toast.LENGTH_SHORT).show();
-            NavHostFragment.findNavController(groupsFragment).navigate(R.id.action_GroupsFragment_to_ListFragment);
+            Toast.makeText(getContext(), "Item clicked is : " + task, Toast.LENGTH_SHORT).show();
+
         });
 
 //        delete.setOnClickListener(b -> {
@@ -93,5 +83,4 @@ public class GroupsLVAdapter extends ArrayAdapter<Group> {
         return convertView;
 
     }
-
 }

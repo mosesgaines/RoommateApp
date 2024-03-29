@@ -11,28 +11,30 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.roommateapp.model.Group;
 import com.example.roommateapp.model.TaskList;
+import com.example.roommateapp.ui.ListFragment;
 
 import java.util.ArrayList;
 
 public class ListsLVAdapter extends ArrayAdapter<TaskList> {
-    public ListsLVAdapter(Context context, ArrayList<TaskList> listArrayList) {
-        super(context, 0, listArrayList);
+
+    private ListFragment taskListFragment;
+    public ListsLVAdapter(Context context, ArrayList<TaskList> listsArrayList, ListFragment listsFragment) {
+        super(context, 0, listsArrayList);
+        this.taskListFragment = listsFragment;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-//        View listitemView = convertView;
+
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view_text, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view_item, parent, false);
         }
 
-//        User user = getItem(position);
-//        TextView textUser = listitemView.findViewById(R.id.usersText);
-//        textUser.setText(user.getName());
         // after inflating an item of listview item
 
         // we are getting data from array list inside
@@ -46,7 +48,6 @@ public class ListsLVAdapter extends ArrayAdapter<TaskList> {
         // initializing our UI components of list view item.
 
         TextView text = convertView.findViewById(R.id.listViewText);
-        Button delete = convertView.findViewById(R.id.deleteButton);
 
 
         // after initializing our items we are
@@ -77,6 +78,7 @@ public class ListsLVAdapter extends ArrayAdapter<TaskList> {
             // we are displaying a toast message.
 
             Toast.makeText(getContext(), "Item clicked is : " + tList.getName(), Toast.LENGTH_SHORT).show();
+            NavHostFragment.findNavController(taskListFragment).navigate(R.id.action_ListFragment_to_ListItemFragment);
 
         });
 

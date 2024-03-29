@@ -170,5 +170,7 @@ public class TaskList {
         return this.listID;
     }
 
+    public ArrayList<String> getItems() { return this.items;}
+
 
 }

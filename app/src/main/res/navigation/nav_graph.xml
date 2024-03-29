@@ -44,9 +44,30 @@
     <fragment
         android:id="@+id/ListFragment"
         android:name="com.example.roommateapp.ui.ListFragment"
-        android:label="List"
+        android:label="@string/lists"
         tools:layout="@layout/list_fragment">
 
+        <action
+            android:id="@+id/action_ListFragment_to_GroupsFragment"
+            app:destination="@id/GroupsFragment" />
+        <action
+            android:id="@+id/action_ListFragment_to_ListItemFragment"
+            app:destination="@id/ListItemFragment" />
+        <action
+            android:id="@+id/action_ListFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/ListItemFragment"
+        android:name="com.example.roommateapp.ui.ListItemFragment"
+        android:label="@string/tasks"
+        tools:layout="@layout/list_fragment">
 
+        <action
+            android:id="@+id/action_ListItemFragment_to_ListFragment"
+            app:destination="@id/ListFragment" />
+        <action
+            android:id="@+id/action_ListItemFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
+    </fragment>
 </navigation>

@@ -8,30 +8,58 @@
     tools:context=".ui.GroupsFragment">
 
 
-    <Button
-        android:id="@+id/listButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/lists"
-        android:backgroundTint="@color/red"
-        android:layout_toStartOf="@id/gpsButton"
+<!--    <Button-->
+<!--        android:id="@+id/listButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:text="@string/lists"-->
+<!--        android:backgroundTint="@color/red"-->
+<!--        android:layout_toStartOf="@id/gpsButton"-->
+<!--        />-->
+<!--    <Button-->
+<!--        android:id="@+id/gpsButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:text="@string/gps"-->
+<!--        android:backgroundTint="@color/red"-->
+<!--        android:layout_centerHorizontal="true"/>-->
+    <EditText
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:id="@+id/new_group"
+        android:background="@drawable/rounded_edit_text"
+        android:hint="@string/new_group"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:inputType="text"
+        android:layout_above="@id/signoutButton"
+        android:textAlignment="center"
         />
+
     <Button
-        android:id="@+id/gpsButton"
+        android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/gps"
+        android:text="@string/add"
         android:backgroundTint="@color/red"
-        android:layout_centerHorizontal="true"/>
+        android:layout_toEndOf="@id/new_group"
+        android:layout_below="@id/groupsList"
+        android:layout_alignBottom="@id/new_group"
+        />
     <Button
         android:id="@+id/signoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="@string/signout"
-        android:layout_toEndOf="@id/gpsButton"
+        android:layout_centerHorizontal="true"
         android:backgroundTint="@color/red"/>
     <ListView
         android:id="@+id/groupsList"
@@ -39,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:drawSelectorOnTop="false"
-        android:layout_above="@id/listButton"
+        android:layout_above="@id/new_group"
         />
 
 

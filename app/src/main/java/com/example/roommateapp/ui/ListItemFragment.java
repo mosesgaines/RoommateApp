@@ -1,20 +1,21 @@
 package com.example.roommateapp.ui;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
+import com.example.roommateapp.ListItemLVAdapter;
 import com.example.roommateapp.R;
-import com.example.roommateapp.GroupsLVAdapter;
-import com.example.roommateapp.databinding.GroupsFragmentBinding;
-import com.example.roommateapp.model.Group;
+import com.example.roommateapp.databinding.ListItemFragmentBinding;
+import com.example.roommateapp.model.TaskList;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,13 +23,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupsFragment extends Fragment {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link ListItemFragment} factory method to
+ * create an instance of this fragment.
+ */
+public class ListItemFragment extends Fragment {
 
-    private GroupsFragmentBinding binding;
+    private ListItemFragmentBinding binding;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private ArrayList<Group> mUserList;
-    ListView groupLV;
+    private ArrayList<String> mTasks;
+    private ListView listLV;
 
 
     @Override
@@ -36,7 +42,7 @@ public class GroupsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        mUserList = new ArrayList<>();
+        mTasks = new ArrayList<>();
     }
 
     @Override
@@ -45,8 +51,8 @@ public class GroupsFragment extends Fragment {
             Bundle savedInstanceState
     ) {
 
-        binding = GroupsFragmentBinding.inflate(inflater, container, false);
-        groupLV = binding.groupsList;
+        binding = ListItemFragmentBinding.inflate(inflater, container, false);
+        listLV = binding.taskList;
         loadDatainListview();
         return binding.getRoot();
 
@@ -55,15 +61,16 @@ public class GroupsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        binding.listsButton.setOnClickListener(e -> NavHostFragment.findNavController(ListItemFragment.this).navigate(R.id.action_ListItemFragment_to_ListFragment));
         binding.signoutButton.setOnClickListener(e -> {
 
             signOut();
 
-            NavHostFragment.findNavController(GroupsFragment.this)
-                    .navigate(R.id.action_GroupsFragment_to_LoginFragment);
+            NavHostFragment.findNavController(ListItemFragment.this)
+                    .navigate(R.id.action_ListItemFragment_to_LoginFragment);
         });
 //
-//        binding.listButton.setOnClickListener(e -> NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_ListFragment));
+//        binding.usersButton.setOnClickListener(e -> NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_UsersFragment));
     }
 
     @Override
@@ -84,7 +91,10 @@ public class GroupsFragment extends Fragment {
 
         // firestore using collection in android.
 
-        db.collection("groups").get()
+        /** hardcoded for now, this is where you could set the adapter to the specific list items
+         *  for the list that was clicked on **/
+
+        db.collection("lists").whereEqualTo("name", "list").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     // after getting the data we are calling on success method
                     // and inside this method we are checking if the received
@@ -96,19 +106,20 @@ public class GroupsFragment extends Fragment {
                         for (DocumentSnapshot d : list) {
                             // after getting this list we are passing
                             // that list to our object class.
-                            Group group = d.toObject(Group.class);
+                            TaskList tList = d.toObject(TaskList.class);
                             // after getting data from Firebase we are
                             // storing that data in our array list
-                            mUserList.add(group);
+                            mTasks.addAll(tList.getItems());
                         }
                         // after that we are passing our array list to our adapter class.
-                        GroupsLVAdapter adapter = new GroupsLVAdapter(getActivity().getApplicationContext(), mUserList, this);
+                        ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks);
                         // after passing this array list to our adapter
                         // class we are setting our adapter to our list view.
-                        groupLV.setAdapter(adapter);
+                        listLV.setAdapter(adapter);
+//                        listLV.setAdapter(testAdapter);
                     } else {
                         // if the snapshot is empty we are displaying a toast message.
-                        Toast.makeText(GroupsFragment.this.getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ListItemFragment.this.getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(e -> {
 
@@ -116,8 +127,7 @@ public class GroupsFragment extends Fragment {
 
                     // when we get any error from Firebase.
 
-                    Toast.makeText(GroupsFragment.this.getContext(), "Fail to load data..", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ListItemFragment.this.getContext(), "Fail to load data..", Toast.LENGTH_SHORT).show();
                 });
     }
-
 }

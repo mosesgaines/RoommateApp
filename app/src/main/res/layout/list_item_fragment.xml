@@ -5,8 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ListFragment">
-
+    tools:context=".ui.ListItemFragment">
 
 
     <EditText
@@ -15,15 +14,15 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
-        android:id="@+id/new_list"
+        android:id="@+id/new_task"
         android:background="@drawable/rounded_edit_text"
-        android:hint="@string/new_list"
+        android:hint="@string/new_task"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:textColor="@color/black"
         android:layout_marginTop="10dp"
         android:inputType="text"
-        android:layout_above="@id/groupsButton"
+        android:layout_above="@id/listsButton"
         android:textAlignment="center"
         />
 
@@ -33,16 +32,17 @@
         android:layout_height="wrap_content"
         android:text="@string/add"
         android:backgroundTint="@color/red"
-        android:layout_toEndOf="@id/new_list"
-        android:layout_below="@id/listsList"
-        android:layout_alignBottom="@id/new_list"
+        android:layout_toEndOf="@id/new_task"
+        android:layout_below="@id/taskList"
+        android:layout_alignBottom="@id/new_task"
         />
+
     <Button
-        android:id="@+id/groupsButton"
+        android:id="@+id/listsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="@string/groups"
+        android:text="@string/lists"
         android:backgroundTint="@color/red"
         android:layout_toStartOf="@id/gpsButton"
         />
@@ -63,9 +63,9 @@
         android:layout_toEndOf="@id/gpsButton"
         android:backgroundTint="@color/red"/>
     <ListView
-        android:id="@+id/listsList"
+        android:id="@+id/taskList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/new_list"
+        android:layout_above="@id/new_task"
         />
 </RelativeLayout>

@@ -84,10 +84,10 @@ public class UsersFragment extends Fragment {
                             mUserList.add(group);
                         }
                         // after that we are passing our array list to our adapter class.
-                        GroupsLVAdapter adapter = new GroupsLVAdapter(getActivity().getApplicationContext(), mUserList);
+//                        GroupsLVAdapter adapter = new GroupsLVAdapter(getActivity().getApplicationContext(), mUserList, this);
                         // after passing this array list to our adapter
                         // class we are setting our adapter to our list view.
-                        userLV.setAdapter(adapter);
+//                        userLV.setAdapter(adapter);
                     } else {
                         // if the snapshot is empty we are displaying a toast message.
                         Toast.makeText(UsersFragment.this.getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
