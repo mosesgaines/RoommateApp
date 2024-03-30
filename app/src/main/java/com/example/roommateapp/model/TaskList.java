@@ -2,6 +2,7 @@ package com.example.roommateapp.model;
 
 import static com.example.roommateapp.model.HelperMethods.getNextListId;
 import static com.example.roommateapp.model.HelperMethods.incrementListId;
+import static com.example.roommateapp.model.HelperMethods.parseStringToItemList;
 import static com.example.roommateapp.model.HelperMethods.parseStringToList;
 
 import android.util.Log;
@@ -84,14 +85,14 @@ public class TaskList {
 
     public TaskList(long listId, DocumentSnapshot taskList, DocumentReference ref) {
         this.listID = listId;
-        this.items = new ArrayList<String>();
         this.taskRef = ref;
 
         //convert info into name, list of groups, email
         listData = taskList.getData();
         assert listData != null;
-        name = (String) listData.get("name");
+        this.name = (String) listData.get("name");
         String itemString = listData.get("items").toString();
+        this.items = parseStringToItemList(itemString);
         Log.d(TAG, "item data: " + itemString);
     }
     //Methods for adding to and removing from List

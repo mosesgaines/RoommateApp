@@ -13,7 +13,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +43,19 @@ public class HelperMethods {
         while (matcher.find()) {
             String number = matcher.group();
             list.add(number);
+        }
+
+        return list;
+    }
+
+    public static ArrayList<String> parseStringToItemList(String input) {
+        ArrayList<String> list = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\b\\w+\\b(?:\\s*,\\s*\\b\\w+\\b)*");
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            String item = matcher.group();
+            list.add(item);
         }
 
         return list;
