@@ -1,5 +1,7 @@
 package com.example.roommateapp.model;
 
+import static com.example.roommateapp.model.HelperMethods.getNextUserId;
+import static com.example.roommateapp.model.HelperMethods.incrementUserId;
 import static com.example.roommateapp.model.HelperMethods.parseStringToList;
 
 import android.util.Log;
@@ -50,6 +52,8 @@ public class User {
         userData  = new HashMap<>();
         this.name = name;
         this.email = email;
+        this.userID = getNextUserId();
+        incrementUserId();
         this.groupIdList = new ArrayList<String>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("users");
@@ -60,7 +64,6 @@ public class User {
                 if (task.isSuccessful()) {
                     // Count fetched successfully
                     AggregateQuerySnapshot snapshot = task.getResult();
-                    userID = snapshot.getCount();
                     Log.d(TAG, "Count: " + snapshot.getCount());
                     userData.put("groups", groupIdList);
                     userData.put("name", name);
@@ -88,37 +91,19 @@ public class User {
         //Location stuff once figured out
     }
 
-    public User (long userID) {
+    public User (long userID, DocumentSnapshot user, DocumentReference ref) {
         this.userID = userID;
         this.groupIdList = new ArrayList<String>();
+        this.userRef = ref;
 
-        //Get info from database
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        this.userRef = db.collection("users").document(String.valueOf(this.userID));
-        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot user = task.getResult();
-                    if (user.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + user.getData());
-                    } else {
-                        Log.d(TAG, "No such user");
-                    }
-
-                    //convert info into name, list of groups, email
-                    userData = user.getData();
-                    assert userData != null;
-                    name = (String) userData.get("name");
-                    email = (String) userData.get("email");
-                    String groupIdString = userData.get("groups").toString();
-                    Log.d(TAG, "groupId data: " + groupIdString);
-                    groupIdList = parseStringToList(groupIdString);
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
+        //convert info into name, list of groups, email
+        userData = user.getData();
+        assert userData != null;
+        name = (String) userData.get("name");
+        email = (String) userData.get("email");
+        String groupIdString = userData.get("groups").toString();
+        Log.d(TAG, "groupId data: " + groupIdString);
+        groupIdList = parseStringToList(groupIdString);
 
 
         //Convert info into name, list of groups, email

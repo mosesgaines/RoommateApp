@@ -1,5 +1,7 @@
 package com.example.roommateapp.model;
 
+import static com.example.roommateapp.model.HelperMethods.getNextListId;
+import static com.example.roommateapp.model.HelperMethods.incrementListId;
 import static com.example.roommateapp.model.HelperMethods.parseStringToList;
 
 import android.util.Log;
@@ -43,6 +45,8 @@ public class TaskList {
         listData  = new HashMap<>();
         this.name = name;
         this.items = new ArrayList<String>();
+        this.listID = getNextListId();
+        incrementListId();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Query query = db.collection("lists");
         AggregateQuery countQuery = query.count();
@@ -52,7 +56,6 @@ public class TaskList {
                 if (task.isSuccessful()) {
                     // Count fetched successfully
                     AggregateQuerySnapshot snapshot = task.getResult();
-                    listID = snapshot.getCount();
                     Log.d(TAG, "Count: " + snapshot.getCount());
                     //Initialize data and add List to db
 
@@ -79,36 +82,17 @@ public class TaskList {
 
     }
 
-    public TaskList(long listId) {
+    public TaskList(long listId, DocumentSnapshot taskList, DocumentReference ref) {
         this.listID = listId;
         this.items = new ArrayList<String>();
+        this.taskRef = ref;
 
-        //Get info from database
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        this.taskRef = db.collection("lists").document(String.valueOf(this.listID));
-
-        taskRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot taskList = task.getResult();
-                    if (taskList.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + taskList.getData());
-                    } else {
-                        Log.d(TAG, "No such user");
-                    }
-
-                    //convert info into name, list of groups, email
-                    listData = taskList.getData();
-                    assert listData != null;
-                    name = (String) listData.get("name");
-                    String itemString = listData.get("items").toString();
-                    Log.d(TAG, "item data: " + itemString);
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
+        //convert info into name, list of groups, email
+        listData = taskList.getData();
+        assert listData != null;
+        name = (String) listData.get("name");
+        String itemString = listData.get("items").toString();
+        Log.d(TAG, "item data: " + itemString);
     }
     //Methods for adding to and removing from List
     public void addItem (String item) {
