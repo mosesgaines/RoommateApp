@@ -49,7 +49,7 @@ public class HelperMethods {
     public static void incrementUserId() {
         nextUserId++;
 
-        userIdRef.update("nextId", nextUserId).addOnSuccessListener(new OnSuccessListener<Void>() {
+        userIdRef.update("nextId", String.valueOf(nextUserId)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
@@ -66,7 +66,7 @@ public class HelperMethods {
     public static void incrementGroupId() {
         nextGroupId++;
 
-        groupIdRef.update("nextId", nextGroupId).addOnSuccessListener(new OnSuccessListener<Void>() {
+        groupIdRef.update("nextId", String.valueOf(nextGroupId)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
@@ -83,7 +83,7 @@ public class HelperMethods {
     public static void incrementListId() {
         nextListId++;
 
-        listIdRef.update("nextId", nextListId).addOnSuccessListener(new OnSuccessListener<Void>() {
+        listIdRef.update("nextId", String.valueOf(nextListId)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");

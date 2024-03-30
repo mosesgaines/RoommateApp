@@ -1,5 +1,7 @@
 package com.example.roommateapp.ui;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrUser;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import com.example.roommateapp.R;
 import com.example.roommateapp.GroupsLVAdapter;
 import com.example.roommateapp.databinding.GroupsFragmentBinding;
 import com.example.roommateapp.model.Group;
+import com.example.roommateapp.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -50,6 +53,7 @@ public class GroupsFragment extends Fragment {
         loadDatainListview();
         return binding.getRoot();
 
+
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -61,6 +65,13 @@ public class GroupsFragment extends Fragment {
 
             NavHostFragment.findNavController(GroupsFragment.this)
                     .navigate(R.id.action_GroupsFragment_to_LoginFragment);
+        });
+
+        binding.addButton.setOnClickListener(e -> {
+
+            addGroup(binding.newGroup.getText().toString());
+            binding.newGroup.setText("");
+
         });
 //
 //        binding.listButton.setOnClickListener(e -> NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_ListFragment));
@@ -119,5 +130,14 @@ public class GroupsFragment extends Fragment {
                     Toast.makeText(GroupsFragment.this.getContext(), "Fail to load data..", Toast.LENGTH_SHORT).show();
                 });
     }
+
+    private static void addGroup(String name) {
+        //Gets current User, makes a new Group and adds it to the User
+        User user = getCurrUser();
+        Group newGroup = new Group(name);
+        user.addGroup(newGroup);
+    }
+
+
 
 }
