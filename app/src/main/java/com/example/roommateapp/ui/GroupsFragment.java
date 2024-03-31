@@ -1,8 +1,11 @@
 package com.example.roommateapp.ui;
 
 import static com.example.roommateapp.ui.MainActivity.getCurrUser;
+import static com.example.roommateapp.ui.MainActivity.setCurrUser;
+import static com.google.firebase.firestore.FieldPath.documentId;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +21,15 @@ import com.example.roommateapp.GroupsLVAdapter;
 import com.example.roommateapp.databinding.GroupsFragmentBinding;
 import com.example.roommateapp.model.Group;
 import com.example.roommateapp.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +40,7 @@ public class GroupsFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ArrayList<Group> mUserList;
+    private final String TAG = "GroupsFragment";
     ListView groupLV;
 
 
@@ -50,7 +60,7 @@ public class GroupsFragment extends Fragment {
 
         binding = GroupsFragmentBinding.inflate(inflater, container, false);
         groupLV = binding.groupsList;
-        loadDatainListview();
+        loadDataInListview();
         return binding.getRoot();
 
 
@@ -89,13 +99,35 @@ public class GroupsFragment extends Fragment {
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void loadDatainListview() {
+    private void loadDataInListview() {
 
         // below line is use to get data from Firebase
 
         // firestore using collection in android.
 
-        db.collection("groups").get()
+        ArrayList<String> currUserGroups = getCurrUserGroups();
+        for (String currUserGroupId : currUserGroups) {
+            DocumentReference groupRef = db.collection("groups").document(currUserGroupId);
+
+            groupRef.get().addOnCompleteListener(taskDocumentSnapshot -> {
+                    if (taskDocumentSnapshot.isSuccessful()) {
+                        DocumentSnapshot group = taskDocumentSnapshot.getResult();
+                        if (group.exists()) {
+                            Group currUserGroup = new Group (Long.parseLong(group.getId()), group, groupRef);
+                            mUserList.add(currUserGroup);
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting document: ", taskDocumentSnapshot.getException());
+                    }
+
+                GroupsLVAdapter adapter = new GroupsLVAdapter(getActivity().getApplicationContext(), mUserList, this);
+                // after passing this array list to our adapter
+                // class we are setting our adapter to our list view.
+                groupLV.setAdapter(adapter);
+            });
+        }
+
+        /* db.collection("groups").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     // after getting the data we are calling on success method
                     // and inside this method we are checking if the received
@@ -128,15 +160,22 @@ public class GroupsFragment extends Fragment {
                     // when we get any error from Firebase.
 
                     Toast.makeText(GroupsFragment.this.getContext(), "Fail to load data..", Toast.LENGTH_SHORT).show();
-                });
+                }); */
     }
 
-    private static void addGroup(String name) {
+    private void addGroup(String name) {
         //Gets current User, makes a new Group and adds it to the User
         User user = getCurrUser();
         Group newGroup = new Group(name);
         user.addGroup(newGroup);
     }
+
+    private ArrayList<String> getCurrUserGroups() {
+        User user = getCurrUser();
+        return user.getGroups();
+    }
+
+
 
 
 
