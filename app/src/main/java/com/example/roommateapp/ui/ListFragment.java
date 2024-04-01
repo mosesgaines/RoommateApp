@@ -66,6 +66,8 @@ public class ListFragment extends Fragment {
             NavHostFragment.findNavController(ListFragment.this)
                     .navigate(R.id.action_ListFragment_to_LoginFragment);
         });
+
+        binding.gpsButton.setOnClickListener(e -> NavHostFragment.findNavController(ListFragment.this).navigate(R.id.action_ListFragment_to_MapsFragment));
 //
 //        binding.usersButton.setOnClickListener(e -> NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_UsersFragment));
     }

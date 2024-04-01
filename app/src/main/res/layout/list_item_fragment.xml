@@ -44,23 +44,15 @@
         android:layout_alignParentBottom="true"
         android:text="@string/lists"
         android:backgroundTint="@color/red"
-        android:layout_toStartOf="@id/gpsButton"
+        android:layout_marginLeft="110dp"
         />
-    <Button
-        android:id="@+id/gpsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/gps"
-        android:backgroundTint="@color/red"
-        android:layout_centerHorizontal="true"/>
     <Button
         android:id="@+id/signoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="@string/signout"
-        android:layout_toEndOf="@id/gpsButton"
+        android:layout_toEndOf="@id/listsButton"
         android:backgroundTint="@color/red"/>
     <ListView
         android:id="@+id/taskList"
