@@ -127,5 +127,12 @@
         android:label="@string/gps"
         android:id="@+id/MapsFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+        <action
+            android:id="@+id/action_MapsFragment_to_ListFragment"
+            app:destination="@id/ListFragment" />
+        <action
+            android:id="@+id/action_MapsFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
+    </fragment>
 </navigation>
