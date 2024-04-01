@@ -1,4 +1,6 @@
 package com.example.roommateapp;
+import static com.example.roommateapp.ui.MainActivity.setCurrGroup;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,11 +85,14 @@ public class GroupsLVAdapter extends ArrayAdapter<Group> {
             // we are displaying a toast message.
 
             Toast.makeText(getContext(), "Item clicked is : " + group.getName(), Toast.LENGTH_SHORT).show();
+            setCurrGroup(group);
             NavHostFragment.findNavController(groupsFragment).navigate(R.id.action_GroupsFragment_to_ListFragment);
         });
 
         update.setOnClickListener(b -> {
+            setCurrGroup(group);
             NavHostFragment.findNavController(groupsFragment).navigate(R.id.action_GroupsFragment_to_UsersFragment);
+
         });
 
         return convertView;

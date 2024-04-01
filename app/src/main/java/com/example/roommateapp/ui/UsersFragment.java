@@ -21,12 +21,18 @@ import com.example.roommateapp.UserLVAdapter;
 import com.example.roommateapp.databinding.UsersFragmentBinding;
 import com.example.roommateapp.model.Group;
 import com.example.roommateapp.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +43,7 @@ import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link UsersFragment#newInstance} factory method to
+ * Use the  factory method to
  * create an instance of this fragment.
  */
 public class UsersFragment extends Fragment {
@@ -147,9 +153,17 @@ public class UsersFragment extends Fragment {
         binding.groupsButton.setOnClickListener(e -> NavHostFragment.findNavController(UsersFragment.this).navigate(R.id.action_UsersFragment_to_GroupsFragment));
 
         /** Set edit text to whatever the name in the DB is **/
-        binding.groupName.setText("Group Name in DB");
+        binding.groupName.setText(getCurrGroupName());
 
         /** Make button save name change **/
+        binding.saveButton.setOnClickListener(e -> {
+            changeCurrGroupName(binding.groupName.getText().toString());
+            binding.groupName.setText(getCurrGroupName());
+        });
+
+        binding.addButton.setOnClickListener(e -> {
+            addNewUser(binding.newList.getText().toString());
+        });
 
 
         return binding.getRoot();
@@ -168,6 +182,7 @@ public class UsersFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mUserList = new ArrayList<User>();
         binding = null;
     }
 
@@ -182,48 +197,35 @@ public class UsersFragment extends Fragment {
         return currGroup.getUserIDList();
     }
 
-    //Deletes test user in the database
-    private void delete() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("users").document("test")
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "User successfully deleted");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting user", e);
-                    }
-                });
+    private String getCurrGroupName() {
+        Group currGroup = getCurrGroup();
+        return currGroup.getName();
     }
 
-    //Updates the test user in the database
-    private void update() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference testRef = db.collection("users").document("test");
-        testRef.update("first", "Updated").addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot updated"))
-                .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
+    private void changeCurrGroupName(String name) {
+        Group currGroup = getCurrGroup();
+        currGroup.changeName(name);
     }
 
-    //Creates a new test user in the database
-    private void create() {
+    private void addNewUser(String email) {
+        Group currGroup = getCurrGroup();
+        CollectionReference userRef = db.collection("users");
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Create a new user with a first and last name
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Test");
-        user.put("last", "User");
-        user.put("born", 2002);
-
-        // Add a new document with a generated ID
-        db.collection("users").document("test")
-                .set(user)
-                .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: test"))
-                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
+        Query userQuery = userRef.whereEqualTo("email", email);
+        userQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot user : task.getResult()) {
+                        User newUser = new User(Long.parseLong(user.getId()), user, userRef.document(user.getId()));
+                        currGroup.addUser(newUser);
+                    }
+                    mUserList = new ArrayList<>();
+                    loadDatainListview();
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
     }
 }

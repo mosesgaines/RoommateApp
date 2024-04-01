@@ -90,6 +90,7 @@ public class GroupsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mUserList = new ArrayList<Group>();
         binding = null;
     }
 
@@ -168,6 +169,7 @@ public class GroupsFragment extends Fragment {
         User user = getCurrUser();
         Group newGroup = new Group(name);
         user.addGroup(newGroup);
+        newGroup.addUser(user);
     }
 
     private ArrayList<String> getCurrUserGroups() {
