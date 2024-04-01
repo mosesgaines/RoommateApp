@@ -72,6 +72,7 @@ public class ListItemFragment extends Fragment {
                     .navigate(R.id.action_ListItemFragment_to_LoginFragment);
 
         });
+
 //
 //        binding.usersButton.setOnClickListener(e -> NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_UsersFragment));
     }
@@ -148,5 +149,16 @@ public class ListItemFragment extends Fragment {
     private ArrayList<String> getCurrListItems() {
         TaskList currList = getCurrList();
         return currList.getItems();
+    }
+
+    public void refreshView() {
+        mTasks = new ArrayList<>();
+        loadDatainListview();
+    }
+
+    private void addItem(String item) {
+        TaskList currList = getCurrList();
+        currList.addItem(item);
+        refreshView();
     }
 }

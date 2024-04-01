@@ -1,4 +1,5 @@
 package com.example.roommateapp;
+import static com.example.roommateapp.ui.MainActivity.getCurrUser;
 import static com.example.roommateapp.ui.MainActivity.setCurrGroup;
 
 import android.content.Context;
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.roommateapp.model.Group;
+import com.example.roommateapp.model.User;
 import com.example.roommateapp.ui.GroupsFragment;
 
 import java.util.ArrayList;
@@ -95,8 +97,19 @@ public class GroupsLVAdapter extends ArrayAdapter<Group> {
 
         });
 
+        delete.setOnClickListener(e -> {
+            removeGroup(group);
+        });
+
         return convertView;
 
+    }
+
+    private void removeGroup(Group group) {
+        User currUser = getCurrUser();
+        group.removeUser(currUser);
+        currUser.removeGroup(group);
+        groupsFragment.refreshView();
     }
 
 }

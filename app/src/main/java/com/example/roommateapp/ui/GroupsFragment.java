@@ -177,6 +177,12 @@ public class GroupsFragment extends Fragment {
         return user.getGroups();
     }
 
+    public void refreshView() {
+        mUserList = new ArrayList<>();
+        loadDataInListview();
+    }
+
+
 
 
 

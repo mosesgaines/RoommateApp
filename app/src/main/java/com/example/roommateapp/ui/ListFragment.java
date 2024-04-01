@@ -74,6 +74,10 @@ public class ListFragment extends Fragment {
             NavHostFragment.findNavController(ListFragment.this)
                     .navigate(R.id.action_ListFragment_to_LoginFragment);
         });
+        binding.addButton.setOnClickListener(e -> {
+            addList(binding.newList.getText().toString());
+            binding.newList.setText("");
+        });
 //
 //        binding.usersButton.setOnClickListener(e -> NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_UsersFragment));
     }
@@ -178,5 +182,17 @@ public class ListFragment extends Fragment {
     private ArrayList<String> getCurrGroupLists() {
         Group currGroup = getCurrGroup();
         return currGroup.getTaskIDList();
+    }
+
+    private void addList(String name) {
+        Group currGroup = getCurrGroup();
+        TaskList list = new TaskList(name);
+        currGroup.addTaskList(list);
+        refreshView();
+    }
+
+    public void refreshView() {
+        mTaskList = new ArrayList<>();
+        loadDatainListview();
     }
 }

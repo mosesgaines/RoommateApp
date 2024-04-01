@@ -87,7 +87,7 @@ public class UsersFragment extends Fragment {
                     Log.d(TAG, "Error getting document: ", taskDocumentSnapshot.getException());
                 }
 
-                UserLVAdapter adapter = new UserLVAdapter(getActivity().getApplicationContext(), mUserList);
+                UserLVAdapter adapter = new UserLVAdapter(getActivity().getApplicationContext(), mUserList, this);
                 // after passing this array list to our adapter
                 // class we are setting our adapter to our list view.
                 userLV.setAdapter(adapter);
@@ -163,6 +163,7 @@ public class UsersFragment extends Fragment {
 
         binding.addButton.setOnClickListener(e -> {
             addNewUser(binding.newList.getText().toString());
+            binding.newList.setText("");
         });
 
 
@@ -220,12 +221,16 @@ public class UsersFragment extends Fragment {
                         User newUser = new User(Long.parseLong(user.getId()), user, userRef.document(user.getId()));
                         currGroup.addUser(newUser);
                     }
-                    mUserList = new ArrayList<>();
-                    loadDatainListview();
+                    refreshView();
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                 }
             }
         });
+    }
+
+    public void refreshView() {
+        mUserList = new ArrayList<>();
+        loadDatainListview();
     }
 }

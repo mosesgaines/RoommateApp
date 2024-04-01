@@ -1,5 +1,7 @@
 package com.example.roommateapp.ui;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrList;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import com.example.roommateapp.R;
 import com.example.roommateapp.UserLVAdapter;
 import com.example.roommateapp.databinding.EditListFragmentBinding;
 import com.example.roommateapp.databinding.UsersFragmentBinding;
+import com.example.roommateapp.model.TaskList;
 import com.example.roommateapp.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -56,10 +59,12 @@ public class EditListFragment extends Fragment {
         binding = EditListFragmentBinding.inflate(inflater, container, false);
 
         /**  set text with the name of the list that was clicked on **/
-        binding.listName.setText("List name from DB");
+        binding.listName.setText(currListName());
 
         /** make update button change the name in the DB **/
-
+        binding.saveButton.setOnClickListener(e -> {
+            changeListName(binding.listName.getText().toString());
+        });
 
         binding.signoutButton.setOnClickListener(e -> {
 
@@ -92,5 +97,15 @@ public class EditListFragment extends Fragment {
         mAuth.signOut();
         Toast.makeText(getContext(), "Successful Sign Out.",
                 Toast.LENGTH_SHORT).show();
+    }
+
+    private String currListName() {
+        TaskList currList = getCurrList();
+        return currList.getName();
+    }
+
+    private void changeListName(String name) {
+        TaskList currList = getCurrList();
+        currList.changeName(name);
     }
 }
