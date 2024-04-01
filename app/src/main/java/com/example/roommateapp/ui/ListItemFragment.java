@@ -1,5 +1,7 @@
 package com.example.roommateapp.ui;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrList;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -95,6 +97,15 @@ public class ListItemFragment extends Fragment {
         /** hardcoded for now, this is where you could set the adapter to the specific list items
          *  for the list that was clicked on **/
 
+        ArrayList<String> currListItems = getCurrListItems();
+        mTasks.addAll(currListItems);
+
+        ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks, this);
+        // after passing this array list to our adapter
+        // class we are setting our adapter to our list view.
+        listLV.setAdapter(adapter);
+
+        /*
         db.collection("lists").whereEqualTo("name", "list").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     // after getting the data we are calling on success method
@@ -130,5 +141,12 @@ public class ListItemFragment extends Fragment {
 
                     Toast.makeText(ListItemFragment.this.getContext(), "Fail to load data..", Toast.LENGTH_SHORT).show();
                 });
+
+         */
+    }
+
+    private ArrayList<String> getCurrListItems() {
+        TaskList currList = getCurrList();
+        return currList.getItems();
     }
 }

@@ -1,5 +1,7 @@
 package com.example.roommateapp.ui;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrGroup;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -64,7 +66,29 @@ public class UsersFragment extends Fragment {
 
         // firestore using collection in android.
 
-        db.collection("users").get()
+        ArrayList<String> currGroupUsers = getCurrGroupUsers();
+        for (String currGroupUserId : currGroupUsers) {
+            DocumentReference userRef = db.collection("users").document(currGroupUserId);
+
+            userRef.get().addOnCompleteListener(taskDocumentSnapshot -> {
+                if (taskDocumentSnapshot.isSuccessful()) {
+                    DocumentSnapshot user = taskDocumentSnapshot.getResult();
+                    if (user.exists()) {
+                        User currGroupUser = new User (Long.parseLong(user.getId()), user, userRef);
+                        mUserList.add(currGroupUser);
+                    }
+                } else {
+                    Log.d(TAG, "Error getting document: ", taskDocumentSnapshot.getException());
+                }
+
+                UserLVAdapter adapter = new UserLVAdapter(getActivity().getApplicationContext(), mUserList);
+                // after passing this array list to our adapter
+                // class we are setting our adapter to our list view.
+                userLV.setAdapter(adapter);
+            });
+        }
+
+       /* db.collection("users").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     // after getting the data we are calling on success method
                     // and inside this method we are checking if the received
@@ -97,7 +121,7 @@ public class UsersFragment extends Fragment {
                     // when we get any error from Firebase.
 
                     Toast.makeText(UsersFragment.this.getContext(), "Fail to load data..", Toast.LENGTH_SHORT).show();
-                });
+                }); */
     }
 
 
@@ -151,6 +175,11 @@ public class UsersFragment extends Fragment {
         mAuth.signOut();
         Toast.makeText(getContext(), "Successful Sign Out.",
                 Toast.LENGTH_SHORT).show();
+    }
+
+    private ArrayList<String> getCurrGroupUsers() {
+        Group currGroup = getCurrGroup();
+        return currGroup.getUserIDList();
     }
 
     //Deletes test user in the database

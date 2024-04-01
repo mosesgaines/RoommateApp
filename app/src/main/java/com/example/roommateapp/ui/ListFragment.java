@@ -1,6 +1,10 @@
 package com.example.roommateapp.ui;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrGroup;
+import static com.example.roommateapp.ui.MainActivity.getCurrList;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +19,13 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.roommateapp.GroupsLVAdapter;
 import com.example.roommateapp.ListsLVAdapter;
 import com.example.roommateapp.R;
+import com.example.roommateapp.UserLVAdapter;
 import com.example.roommateapp.databinding.ListFragmentBinding;
 import com.example.roommateapp.model.Group;
 import com.example.roommateapp.model.TaskList;
+import com.example.roommateapp.model.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -32,6 +39,7 @@ public class ListFragment extends Fragment {
     private FirebaseFirestore db;
     private ArrayList<TaskList> mTaskList;
     private ListView listLV;
+    private final String TAG = "ListFragment";
 
 
     @Override
@@ -88,6 +96,28 @@ public class ListFragment extends Fragment {
 
         // firestore using collection in android.
 
+        ArrayList<String> currGroupLists = getCurrGroupLists();
+        for (String currGroupListId : currGroupLists) {
+            DocumentReference listRef = db.collection("lists").document(currGroupListId);
+
+            listRef.get().addOnCompleteListener(taskDocumentSnapshot -> {
+                if (taskDocumentSnapshot.isSuccessful()) {
+                    DocumentSnapshot list = taskDocumentSnapshot.getResult();
+                    if (list.exists()) {
+                        TaskList currGroupList = new TaskList (Long.parseLong(list.getId()), list, listRef);
+                        mTaskList.add(currGroupList);
+                    }
+                } else {
+                    Log.d(TAG, "Error getting document: ", taskDocumentSnapshot.getException());
+                }
+
+                ListsLVAdapter adapter = new ListsLVAdapter(getActivity().getApplicationContext(), mTaskList, this);
+                // after passing this array list to our adapter
+                // class we are setting our adapter to our list view.
+                listLV.setAdapter(adapter);
+            });
+        }
+        /*
         // working on this so that I can filter out lists for specific group clicked
         // can delete if we get it working another way
         db.collection("groups").get().addOnSuccessListener(snapshots -> {
@@ -141,5 +171,12 @@ public class ListFragment extends Fragment {
 
                     Toast.makeText(ListFragment.this.getContext(), "Fail to load data..", Toast.LENGTH_SHORT).show();
                 });
+                */
+
+    }
+
+    private ArrayList<String> getCurrGroupLists() {
+        Group currGroup = getCurrGroup();
+        return currGroup.getTaskIDList();
     }
 }
