@@ -49,6 +49,7 @@ public class TaskList {
         this.listID = getNextListId();
         incrementListId();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        taskRef = db.collection("lists").document(String.valueOf(listID));
         Query query = db.collection("lists");
         AggregateQuery countQuery = query.count();
         countQuery.get(AggregateSource.SERVER).addOnCompleteListener(new OnCompleteListener<AggregateQuerySnapshot>() {
@@ -74,7 +75,7 @@ public class TaskList {
                                     Log.w(TAG, "Error writing document", e);
                                 }
                             });
-                    taskRef = db.collection("lists").document(String.valueOf(listID));
+
                 } else {
                     Log.d(TAG, "Count failed: ", task.getException());
                 }

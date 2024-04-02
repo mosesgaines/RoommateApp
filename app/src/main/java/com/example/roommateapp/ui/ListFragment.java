@@ -78,6 +78,7 @@ public class ListFragment extends Fragment {
         binding.addButton.setOnClickListener(e -> {
             addList(binding.newList.getText().toString());
             binding.newList.setText("");
+            refreshView();
         });
 
         binding.gpsButton.setOnClickListener(e -> NavHostFragment.findNavController(ListFragment.this).navigate(R.id.action_ListFragment_to_MapsFragment));

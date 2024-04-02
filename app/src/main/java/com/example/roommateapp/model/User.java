@@ -56,6 +56,7 @@ public class User {
         incrementUserId();
         this.groupIdList = new ArrayList<String>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        userRef = db.collection("users").document(String.valueOf(userID));
         Query query = db.collection("users");
         AggregateQuery countQuery = query.count();
         countQuery.get(AggregateSource.SERVER).addOnCompleteListener(new OnCompleteListener<AggregateQuerySnapshot>() {
@@ -81,7 +82,7 @@ public class User {
                                     Log.w(TAG, "Error writing document", e);
                                 }
                             });
-                    userRef = db.collection("users").document(String.valueOf(userID));
+
                 } else {
                     Log.d(TAG, "Count failed: ", task.getException());
                 }
