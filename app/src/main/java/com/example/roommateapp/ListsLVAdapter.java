@@ -90,18 +90,15 @@ public class ListsLVAdapter extends ArrayAdapter<TaskList> {
         });
 
         delete.setOnClickListener(e -> {
-
+            deleteList(tList);
         });
 
         update.setOnClickListener(e -> {
+            setCurrList(tList);
             listFragment.refreshView();
             NavHostFragment.findNavController(listFragment).navigate(R.id.action_ListFragment_to_EditListFragment);
         });
 
-//        delete.setOnClickListener(b -> {
-//            Group selectedGroup = new Group(0);
-//            selectedGroup.changeName("updated test");
-//        });
 
         return convertView;
     }

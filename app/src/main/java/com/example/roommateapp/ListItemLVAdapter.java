@@ -1,6 +1,7 @@
 package com.example.roommateapp;
 
 import static com.example.roommateapp.ui.MainActivity.getCurrList;
+import static com.example.roommateapp.ui.MainActivity.setCurrItem;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -89,11 +90,11 @@ public class ListItemLVAdapter extends ArrayAdapter<String> {
             deleteItem(task);
         });
 
-        update.setOnClickListener(e -> NavHostFragment.findNavController(listItemFragment).navigate(R.id.action_ListItemFragment_to_EditTaskFragment));
-
-        add.setOnClickListener(e -> {
-            addItem(task);
+        update.setOnClickListener(e -> {
+            setCurrItem(task);
+            NavHostFragment.findNavController(listItemFragment).navigate(R.id.action_ListItemFragment_to_EditTaskFragment);
         });
+
 
         return convertView;
 

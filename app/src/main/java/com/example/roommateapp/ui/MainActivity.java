@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private static User currUser;
     private static Group currGroup;
     private static TaskList currList;
+    private static String currItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +155,12 @@ public class MainActivity extends AppCompatActivity {
     }
     public static void setCurrList(TaskList list) {
         currList = list;
+    }
+    public static void setCurrItem(String item) {
+        currItem = item;
+    }
+    public static String getCurrItem() {
+        return currItem;
     }
 
 }

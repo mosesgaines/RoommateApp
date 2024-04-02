@@ -1,5 +1,9 @@
 package com.example.roommateapp.ui;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrItem;
+import static com.example.roommateapp.ui.MainActivity.getCurrList;
+import static com.example.roommateapp.ui.MainActivity.setCurrItem;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +20,7 @@ import com.example.roommateapp.R;
 import com.example.roommateapp.UserLVAdapter;
 import com.example.roommateapp.databinding.EditTaskFragmentBinding;
 import com.example.roommateapp.databinding.UsersFragmentBinding;
+import com.example.roommateapp.model.TaskList;
 import com.example.roommateapp.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -68,10 +73,12 @@ public class EditTaskFragment extends Fragment {
         binding.tasksButton.setOnClickListener(e -> NavHostFragment.findNavController(EditTaskFragment.this).navigate(R.id.action_EditTaskFragment_to_ListItemFragment));
 
         /** Set edit text to whatever the name in the DB is **/
-        binding.taskName.setText("Task Name in DB");
+        binding.taskName.setText(getCurrItem());
 
         /** Make button save name change **/
-
+        binding.saveButton.setOnClickListener(e -> {
+            changeItemName(binding.taskName.getText().toString());
+        });
 
         return binding.getRoot();
 
@@ -90,5 +97,16 @@ public class EditTaskFragment extends Fragment {
         mAuth.signOut();
         Toast.makeText(getContext(), "Successful Sign Out.",
                 Toast.LENGTH_SHORT).show();
+    }
+
+    private String getCurrItemName() {
+        return getCurrItem();
+    }
+
+    private void changeItemName(String name) {
+        TaskList currList = getCurrList();
+        currList.removeItem(name);
+        currList.addItem(name);
+        setCurrItem(name);
     }
 }

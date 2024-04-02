@@ -55,7 +55,7 @@ public class ListItemFragment extends Fragment {
 
         binding = ListItemFragmentBinding.inflate(inflater, container, false);
         listLV = binding.taskList;
-        loadDatainListview();
+        refreshView();
         return binding.getRoot();
 
     }
@@ -73,6 +73,10 @@ public class ListItemFragment extends Fragment {
 
         });
 
+        binding.addButton.setOnClickListener(e -> {
+            addItem(binding.newTask.getText().toString());
+        });
+
 //
 //        binding.usersButton.setOnClickListener(e -> NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_UsersFragment));
     }
@@ -80,6 +84,7 @@ public class ListItemFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        refreshView();
         binding = null;
     }
 
@@ -99,7 +104,9 @@ public class ListItemFragment extends Fragment {
          *  for the list that was clicked on **/
 
         ArrayList<String> currListItems = getCurrListItems();
-        mTasks.addAll(currListItems);
+        for (String item : currListItems) {
+            mTasks.add(item);
+        }
 
         ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks, this);
         // after passing this array list to our adapter
