@@ -52,8 +52,9 @@ public class Group {
         this.userIDList = new ArrayList<String>();
         this.taskIDList = new ArrayList<String>();
         this.groupID = getNextGroupId();
-        incrementGroupId();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        groupRef = db.collection("groups").document(String.valueOf(groupID));
+        incrementGroupId();
         Query query = db.collection("groups");
         AggregateQuery countQuery = query.count();
         countQuery.get(AggregateSource.SERVER).addOnCompleteListener(new OnCompleteListener<AggregateQuerySnapshot>() {
@@ -81,7 +82,6 @@ public class Group {
                                     Log.w(TAG, "Error writing document", e);
                                 }
                             });
-                    groupRef = db.collection("groups").document(String.valueOf(groupID));
                 }
                 else {
                     Log.d(TAG, "Count failed: ", task.getException());

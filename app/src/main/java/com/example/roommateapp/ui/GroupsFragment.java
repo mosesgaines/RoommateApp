@@ -170,6 +170,7 @@ public class GroupsFragment extends Fragment {
         Group newGroup = new Group(name);
         user.addGroup(newGroup);
         newGroup.addUser(user);
+        refreshView();
     }
 
     private ArrayList<String> getCurrUserGroups() {

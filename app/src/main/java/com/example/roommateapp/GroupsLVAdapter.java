@@ -99,6 +99,7 @@ public class GroupsLVAdapter extends ArrayAdapter<Group> {
 
         delete.setOnClickListener(e -> {
             removeGroup(group);
+            groupsFragment.refreshView();
         });
 
         return convertView;
@@ -111,5 +112,7 @@ public class GroupsLVAdapter extends ArrayAdapter<Group> {
         currUser.removeGroup(group);
         groupsFragment.refreshView();
     }
+
+
 
 }
