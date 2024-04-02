@@ -1,5 +1,7 @@
 package com.example.roommateapp.ui;
 
+import static com.example.roommateapp.ui.MainActivity.setCurrUser;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.roommateapp.R;
 import com.example.roommateapp.databinding.LoginFragmentBinding;
+import com.example.roommateapp.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -21,6 +24,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 public class LoginFragment extends Fragment {
@@ -103,8 +111,28 @@ public class LoginFragment extends Fragment {
                             Log.d(TAG, "signInWithEmail:success");
                             Toast.makeText(getContext(), "Success!",
                                     Toast.LENGTH_SHORT).show();
-                            NavHostFragment.findNavController(LoginFragment.this)
-                                    .navigate(R.id.action_LoginFragment_to_GroupsFragment);
+                            //Get user info from db
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            CollectionReference usersRef = db.collection("users");
+                            Query query = usersRef.whereEqualTo("email", email);
+                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot user : task.getResult()) {
+                                            Log.d(TAG, user.getId() + " => " + user.getData());
+                                            User userGet = new User(Long.parseLong(user.getId()), user, usersRef.document(user.getId()));
+                                            setCurrUser(userGet);
+                                        }
+
+                                        NavHostFragment.findNavController(LoginFragment.this)
+                                                .navigate(R.id.action_LoginFragment_to_GroupsFragment);
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());

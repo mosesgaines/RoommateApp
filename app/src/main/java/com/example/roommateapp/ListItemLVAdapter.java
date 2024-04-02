@@ -1,5 +1,8 @@
 package com.example.roommateapp;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrList;
+import static com.example.roommateapp.ui.MainActivity.setCurrItem;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +51,8 @@ public class ListItemLVAdapter extends ArrayAdapter<String> {
 
         TextView text = convertView.findViewById(R.id.listViewText);
         Button update = convertView.findViewById(R.id.updateButton);
+        Button delete = convertView.findViewById(R.id.deleteButton);
+        Button add = convertView.findViewById(R.id.addButton);
 
         // after initializing our items we are
 
@@ -80,13 +85,30 @@ public class ListItemLVAdapter extends ArrayAdapter<String> {
 
         });
 
-//        delete.setOnClickListener(b -> {
-//            Group selectedGroup = new Group(0);
-//            selectedGroup.changeName("updated test");
-//        });
-        update.setOnClickListener(e -> NavHostFragment.findNavController(listItemFragment).navigate(R.id.action_ListItemFragment_to_EditTaskFragment));
+
+        delete.setOnClickListener(e -> {
+            deleteItem(task);
+        });
+
+        update.setOnClickListener(e -> {
+            setCurrItem(task);
+            NavHostFragment.findNavController(listItemFragment).navigate(R.id.action_ListItemFragment_to_EditTaskFragment);
+        });
+
 
         return convertView;
 
+    }
+
+    private void deleteItem(String item) {
+        TaskList currList = getCurrList();
+        currList.removeItem(item);
+        listItemFragment.refreshView();
+    }
+
+    private void addItem(String item) {
+        TaskList currList = getCurrList();
+        currList.addItem(item);
+        listItemFragment.refreshView();
     }
 }

@@ -1,5 +1,7 @@
 package com.example.roommateapp.ui;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrGroup;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,12 +21,18 @@ import com.example.roommateapp.UserLVAdapter;
 import com.example.roommateapp.databinding.UsersFragmentBinding;
 import com.example.roommateapp.model.Group;
 import com.example.roommateapp.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +43,7 @@ import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link UsersFragment#newInstance} factory method to
+ * Use the  factory method to
  * create an instance of this fragment.
  */
 public class UsersFragment extends Fragment {
@@ -64,7 +72,29 @@ public class UsersFragment extends Fragment {
 
         // firestore using collection in android.
 
-        db.collection("users").get()
+        ArrayList<String> currGroupUsers = getCurrGroupUsers();
+        for (String currGroupUserId : currGroupUsers) {
+            DocumentReference userRef = db.collection("users").document(currGroupUserId);
+
+            userRef.get().addOnCompleteListener(taskDocumentSnapshot -> {
+                if (taskDocumentSnapshot.isSuccessful()) {
+                    DocumentSnapshot user = taskDocumentSnapshot.getResult();
+                    if (user.exists()) {
+                        User currGroupUser = new User (Long.parseLong(user.getId()), user, userRef);
+                        mUserList.add(currGroupUser);
+                    }
+                } else {
+                    Log.d(TAG, "Error getting document: ", taskDocumentSnapshot.getException());
+                }
+
+                UserLVAdapter adapter = new UserLVAdapter(getActivity().getApplicationContext(), mUserList, this);
+                // after passing this array list to our adapter
+                // class we are setting our adapter to our list view.
+                userLV.setAdapter(adapter);
+            });
+        }
+
+       /* db.collection("users").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     // after getting the data we are calling on success method
                     // and inside this method we are checking if the received
@@ -97,7 +127,7 @@ public class UsersFragment extends Fragment {
                     // when we get any error from Firebase.
 
                     Toast.makeText(UsersFragment.this.getContext(), "Fail to load data..", Toast.LENGTH_SHORT).show();
-                });
+                }); */
     }
 
 
@@ -123,9 +153,18 @@ public class UsersFragment extends Fragment {
         binding.groupsButton.setOnClickListener(e -> NavHostFragment.findNavController(UsersFragment.this).navigate(R.id.action_UsersFragment_to_GroupsFragment));
 
         /** Set edit text to whatever the name in the DB is **/
-        binding.groupName.setText("Group Name in DB");
+        binding.groupName.setText(getCurrGroupName());
 
         /** Make button save name change **/
+        binding.saveButton.setOnClickListener(e -> {
+            changeCurrGroupName(binding.groupName.getText().toString());
+            binding.groupName.setText(getCurrGroupName());
+        });
+
+        binding.addButton.setOnClickListener(e -> {
+            addNewUser(binding.newList.getText().toString());
+            binding.newList.setText("");
+        });
 
 
         return binding.getRoot();
@@ -144,6 +183,7 @@ public class UsersFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mUserList = new ArrayList<User>();
         binding = null;
     }
 
@@ -153,48 +193,44 @@ public class UsersFragment extends Fragment {
                 Toast.LENGTH_SHORT).show();
     }
 
-    //Deletes test user in the database
-    private void delete() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("users").document("test")
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "User successfully deleted");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting user", e);
-                    }
-                });
+    private ArrayList<String> getCurrGroupUsers() {
+        Group currGroup = getCurrGroup();
+        return currGroup.getUserIDList();
     }
 
-    //Updates the test user in the database
-    private void update() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference testRef = db.collection("users").document("test");
-        testRef.update("first", "Updated").addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot updated"))
-                .addOnFailureListener(e -> Log.w(TAG, "Error updating document", e));
+    private String getCurrGroupName() {
+        Group currGroup = getCurrGroup();
+        return currGroup.getName();
     }
 
-    //Creates a new test user in the database
-    private void create() {
+    private void changeCurrGroupName(String name) {
+        Group currGroup = getCurrGroup();
+        currGroup.changeName(name);
+    }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Create a new user with a first and last name
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Test");
-        user.put("last", "User");
-        user.put("born", 2002);
+    private void addNewUser(String email) {
+        Group currGroup = getCurrGroup();
+        CollectionReference userRef = db.collection("users");
 
-        // Add a new document with a generated ID
-        db.collection("users").document("test")
-                .set(user)
-                .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: test"))
-                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
+        Query userQuery = userRef.whereEqualTo("email", email);
+        userQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot user : task.getResult()) {
+                        User newUser = new User(Long.parseLong(user.getId()), user, userRef.document(user.getId()));
+                        currGroup.addUser(newUser);
+                    }
+                    refreshView();
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
+    public void refreshView() {
+        mUserList = new ArrayList<>();
+        loadDatainListview();
     }
 }

@@ -1,5 +1,7 @@
 package com.example.roommateapp.ui;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrList;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -53,7 +55,7 @@ public class ListItemFragment extends Fragment {
 
         binding = ListItemFragmentBinding.inflate(inflater, container, false);
         listLV = binding.taskList;
-        loadDatainListview();
+        refreshView();
         return binding.getRoot();
 
     }
@@ -70,6 +72,11 @@ public class ListItemFragment extends Fragment {
                     .navigate(R.id.action_ListItemFragment_to_LoginFragment);
 
         });
+
+        binding.addButton.setOnClickListener(e -> {
+            addItem(binding.newTask.getText().toString());
+        });
+
 //
 //        binding.usersButton.setOnClickListener(e -> NavHostFragment.findNavController(GroupsFragment.this).navigate(R.id.action_GroupsFragment_to_UsersFragment));
     }
@@ -77,6 +84,7 @@ public class ListItemFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        refreshView();
         binding = null;
     }
 
@@ -95,6 +103,17 @@ public class ListItemFragment extends Fragment {
         /** hardcoded for now, this is where you could set the adapter to the specific list items
          *  for the list that was clicked on **/
 
+        ArrayList<String> currListItems = getCurrListItems();
+        for (String item : currListItems) {
+            mTasks.add(item);
+        }
+
+        ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks, this);
+        // after passing this array list to our adapter
+        // class we are setting our adapter to our list view.
+        listLV.setAdapter(adapter);
+
+        /*
         db.collection("lists").whereEqualTo("name", "list").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     // after getting the data we are calling on success method
@@ -130,5 +149,23 @@ public class ListItemFragment extends Fragment {
 
                     Toast.makeText(ListItemFragment.this.getContext(), "Fail to load data..", Toast.LENGTH_SHORT).show();
                 });
+
+         */
+    }
+
+    private ArrayList<String> getCurrListItems() {
+        TaskList currList = getCurrList();
+        return currList.getItems();
+    }
+
+    public void refreshView() {
+        mTasks = new ArrayList<>();
+        loadDatainListview();
+    }
+
+    private void addItem(String item) {
+        TaskList currList = getCurrList();
+        currList.addItem(item);
+        refreshView();
     }
 }

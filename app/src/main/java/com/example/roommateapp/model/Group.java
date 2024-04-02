@@ -186,6 +186,14 @@ public class Group {
     public String getName() {
         return this.name;
     }
+
+    public ArrayList<String> getUserIDList() {
+        return this.userIDList;
+    }
+
+    public ArrayList<String> getTaskIDList() {
+        return this.taskIDList;
+    }
     //Method to edit the name of the group
     public void changeName(String name) {
         //Change name and update group in db

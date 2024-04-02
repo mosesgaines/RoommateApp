@@ -1,5 +1,8 @@
 package com.example.roommateapp;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrGroup;
+import static com.example.roommateapp.ui.MainActivity.setCurrList;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.roommateapp.model.Group;
 import com.example.roommateapp.model.TaskList;
 import com.example.roommateapp.ui.ListFragment;
 
@@ -48,6 +52,7 @@ public class ListsLVAdapter extends ArrayAdapter<TaskList> {
 
         TextView text = convertView.findViewById(R.id.listViewText);
         Button update = convertView.findViewById(R.id.updateButton);
+        Button delete = convertView.findViewById(R.id.deleteButton);
 
 
         // after initializing our items we are
@@ -78,18 +83,29 @@ public class ListsLVAdapter extends ArrayAdapter<TaskList> {
             // we are displaying a toast message.
 
             Toast.makeText(getContext(), "Item clicked is : " + tList.getName(), Toast.LENGTH_SHORT).show();
+            setCurrList(tList);
+            listFragment.refreshView();
             NavHostFragment.findNavController(listFragment).navigate(R.id.action_ListFragment_to_ListItemFragment);
 
         });
 
-        update.setOnClickListener(e -> NavHostFragment.findNavController(listFragment).navigate(R.id.action_ListFragment_to_EditListFragment));
+        delete.setOnClickListener(e -> {
+            deleteList(tList);
+        });
 
-//        delete.setOnClickListener(b -> {
-//            Group selectedGroup = new Group(0);
-//            selectedGroup.changeName("updated test");
-//        });
+        update.setOnClickListener(e -> {
+            setCurrList(tList);
+            listFragment.refreshView();
+            NavHostFragment.findNavController(listFragment).navigate(R.id.action_ListFragment_to_EditListFragment);
+        });
+
 
         return convertView;
+    }
 
+    private void deleteList(TaskList list) {
+        Group currGroup = getCurrGroup();
+        currGroup.removeTaskList(list);
+        listFragment.refreshView();
     }
 }

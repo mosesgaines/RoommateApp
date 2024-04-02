@@ -54,8 +54,8 @@ public class SignupFragment extends Fragment {
             String name = binding.fullName.getText().toString();
             String confirmPassword = binding.passwordConfirm.getText().toString();
             if (password.equals(confirmPassword)) {
-                createAccount(email, password);
-                User newUser = new User(name, email);
+                createAccount(name, email, password);
+
             } else {
                 Toast.makeText(getContext(), "Passwords do not match.",
                         Toast.LENGTH_SHORT).show();
@@ -107,7 +107,7 @@ public class SignupFragment extends Fragment {
         return valid;
     }
 
-    private void createAccount(String email, String password) {
+    private void createAccount(String name, String email, String password) {
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm()) {
             return;
@@ -115,6 +115,8 @@ public class SignupFragment extends Fragment {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(requireActivity(), task -> {
                         if (task.isSuccessful()) {
+                            //Create new User in the database
+                            User newUser = new User(name, email);
                             // Sign in success, go to login page
                             NavHostFragment.findNavController(SignupFragment.this)
                                     .navigate(R.id.action_SignupFragment_to_LoginFragment);

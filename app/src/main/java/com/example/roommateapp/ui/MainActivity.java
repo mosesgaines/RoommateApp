@@ -1,5 +1,7 @@
 package com.example.roommateapp.ui;
 
+import static com.example.roommateapp.model.HelperMethods.initializeIds;
+
 import android.os.Bundle;
 import android.util.Log;
 
@@ -42,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
+    private static User currUser;
+    private static Group currGroup;
+    private static TaskList currList;
+    private static String currItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        initializeIds();
 
 
 
@@ -127,4 +135,32 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    public static User getCurrUser() {
+        return currUser;
+    }
+    public static void setCurrUser(User user) {
+        currUser = user;
+    }
+
+    public static Group getCurrGroup() {
+        return currGroup;
+    }
+    public static void setCurrGroup(Group group) {
+        currGroup = group;
+    }
+
+    public static TaskList getCurrList() {
+        return currList;
+    }
+    public static void setCurrList(TaskList list) {
+        currList = list;
+    }
+    public static void setCurrItem(String item) {
+        currItem = item;
+    }
+    public static String getCurrItem() {
+        return currItem;
+    }
+
 }

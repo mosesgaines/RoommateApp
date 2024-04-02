@@ -13,7 +13,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,10 +48,23 @@ public class HelperMethods {
         return list;
     }
 
+    public static ArrayList<String> parseStringToItemList(String input) {
+        ArrayList<String> list = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\b\\w+\\b(?:\\s*,\\s*\\b\\w+\\b)*");
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            String item = matcher.group();
+            list.add(item);
+        }
+
+        return list;
+    }
+
     public static void incrementUserId() {
         nextUserId++;
 
-        userIdRef.update("nextId", nextUserId).addOnSuccessListener(new OnSuccessListener<Void>() {
+        userIdRef.update("nextId", String.valueOf(nextUserId)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
@@ -66,7 +81,7 @@ public class HelperMethods {
     public static void incrementGroupId() {
         nextGroupId++;
 
-        groupIdRef.update("nextId", nextGroupId).addOnSuccessListener(new OnSuccessListener<Void>() {
+        groupIdRef.update("nextId", String.valueOf(nextGroupId)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");
@@ -83,7 +98,7 @@ public class HelperMethods {
     public static void incrementListId() {
         nextListId++;
 
-        listIdRef.update("nextId", nextListId).addOnSuccessListener(new OnSuccessListener<Void>() {
+        listIdRef.update("nextId", String.valueOf(nextListId)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot successfully written!");

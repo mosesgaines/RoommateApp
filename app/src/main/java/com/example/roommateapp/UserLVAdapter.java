@@ -1,24 +1,32 @@
 package com.example.roommateapp;
 
+import static com.example.roommateapp.ui.MainActivity.getCurrGroup;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.roommateapp.model.Group;
 import com.example.roommateapp.model.User;
+import com.example.roommateapp.ui.UsersFragment;
 
 import java.util.ArrayList;
 
 public class UserLVAdapter extends ArrayAdapter<User> {
 
-    public UserLVAdapter(Context context, ArrayList<User> userArrayList) {
+    private UsersFragment userFragment;
+
+    public UserLVAdapter(Context context, ArrayList<User> userArrayList, UsersFragment userFragment) {
         super(context, 0, userArrayList);
+        this.userFragment = userFragment;
     }
 
     @NonNull
@@ -41,6 +49,7 @@ public class UserLVAdapter extends ArrayAdapter<User> {
         // initializing our UI components of list view item.
 
         TextView text = convertView.findViewById(R.id.listViewText);
+        Button delete = convertView.findViewById(R.id.deleteButton);
 
 
         // after initializing our items we are
@@ -74,13 +83,21 @@ public class UserLVAdapter extends ArrayAdapter<User> {
 
         });
 
-//        delete.setOnClickListener(b -> {
-//            Group selectedGroup = new Group(0);
-//            selectedGroup.changeName("updated test");
-//        });
+        delete.setOnClickListener(b -> {
+            removeUser(user);
+        });
+
+
 
         return convertView;
 
+    }
+
+    private void removeUser(User user) {
+        Group currGroup = getCurrGroup();
+        currGroup.removeUser(user);
+        user.removeGroup(currGroup);
+        userFragment.refreshView();
     }
 
 }
