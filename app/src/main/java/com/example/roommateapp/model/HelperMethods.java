@@ -49,16 +49,9 @@ public class HelperMethods {
     }
 
     public static ArrayList<String> parseStringToItemList(String input) {
-        ArrayList<String> list = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\b\\w+\\b(?:\\s*,\\s*\\b\\w+\\b)*");
-        Matcher matcher = pattern.matcher(input);
-
-        while (matcher.find()) {
-            String item = matcher.group();
-            list.add(item);
-        }
-
-        return list;
+        input = input.substring(1, input.length() - 1);
+        String[] parts = input.split("\\s*,\\s*");
+        return new ArrayList<>(Arrays.asList(parts));
     }
 
     public static void incrementUserId() {

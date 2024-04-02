@@ -58,7 +58,7 @@ public class ListFragment extends Fragment {
 
         binding = ListFragmentBinding.inflate(inflater, container, false);
         listLV = binding.listsList;
-        loadDatainListview();
+        refreshView();
         return binding.getRoot();
 
     }

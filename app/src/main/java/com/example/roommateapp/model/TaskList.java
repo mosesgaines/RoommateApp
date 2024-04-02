@@ -115,34 +115,18 @@ public class TaskList {
 
     public void removeItem(String item) {
         //Remove item from list and update list in db
-        for (String itemInList : this.items) {
-            this.items.remove(itemInList);
-        }
-        this.taskRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+        this.items.remove(item);
+
+        this.taskRef.update("items", this.items).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                        listData.remove("items");
-                        listData.put("items", items);
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        db.collection("lists").document(String.valueOf(listID)).set(listData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "DocumentSnapshot successfully written!");
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w(TAG, "Error writing document", e);
-                                    }
-                                });
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
+                        Log.w(TAG, "Error writing document", e);
                     }
                 });
 

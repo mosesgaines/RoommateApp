@@ -105,7 +105,8 @@ public class EditTaskFragment extends Fragment {
 
     private void changeItemName(String name) {
         TaskList currList = getCurrList();
-        currList.removeItem(name);
+        String currItem = getCurrItem();
+        currList.removeItem(currItem);
         currList.addItem(name);
         setCurrItem(name);
     }
