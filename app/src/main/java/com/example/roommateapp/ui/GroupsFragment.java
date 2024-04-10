@@ -15,7 +15,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.roommateapp.GroupsRVAdapter;
 import com.example.roommateapp.R;
 import com.example.roommateapp.GroupsLVAdapter;
 import com.example.roommateapp.databinding.GroupsFragmentBinding;
@@ -41,7 +44,9 @@ public class GroupsFragment extends Fragment {
     private FirebaseFirestore db;
     private ArrayList<Group> mUserList;
     private final String TAG = "GroupsFragment";
-    ListView groupLV;
+    private RecyclerView groupRV;
+    private RecyclerView.LayoutManager mLayoutManager;
+
 
 
     @Override
@@ -59,8 +64,8 @@ public class GroupsFragment extends Fragment {
     ) {
 
         binding = GroupsFragmentBinding.inflate(inflater, container, false);
-        groupLV = binding.groupsList;
-        loadDataInListview();
+        groupRV = binding.groupsList;
+        refreshView();
         return binding.getRoot();
 
 
@@ -92,6 +97,7 @@ public class GroupsFragment extends Fragment {
         super.onDestroyView();
         mUserList = new ArrayList<Group>();
         binding = null;
+        refreshView();
     }
 
     private void signOut() {
@@ -105,7 +111,6 @@ public class GroupsFragment extends Fragment {
         // below line is use to get data from Firebase
 
         // firestore using collection in android.
-
         ArrayList<String> currUserGroups = getCurrUserGroups();
         for (String currUserGroupId : currUserGroups) {
             DocumentReference groupRef = db.collection("groups").document(currUserGroupId);
@@ -121,10 +126,13 @@ public class GroupsFragment extends Fragment {
                         Log.d(TAG, "Error getting document: ", taskDocumentSnapshot.getException());
                     }
 
-                GroupsLVAdapter adapter = new GroupsLVAdapter(getActivity().getApplicationContext(), mUserList, this);
+//                GroupsLVAdapter adapter = new GroupsLVAdapter(getActivity().getApplicationContext(), mUserList, this);
+                GroupsRVAdapter adapter = new GroupsRVAdapter(mUserList, this);
                 // after passing this array list to our adapter
                 // class we are setting our adapter to our list view.
-                groupLV.setAdapter(adapter);
+                groupRV.setAdapter(adapter);
+                mLayoutManager = new LinearLayoutManager(getContext());
+                groupRV.setLayoutManager(mLayoutManager);
             });
         }
 

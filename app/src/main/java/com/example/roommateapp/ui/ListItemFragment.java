@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.roommateapp.ListItemLVAdapter;
+import com.example.roommateapp.ListItemRVAdapter;
 import com.example.roommateapp.R;
 import com.example.roommateapp.databinding.ListItemFragmentBinding;
 import com.example.roommateapp.model.TaskList;
@@ -37,6 +40,8 @@ public class ListItemFragment extends Fragment {
     private FirebaseFirestore db;
     private ArrayList<String> mTasks;
     private ListView listLV;
+    private RecyclerView listRV;
+    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Override
@@ -54,7 +59,8 @@ public class ListItemFragment extends Fragment {
     ) {
 
         binding = ListItemFragmentBinding.inflate(inflater, container, false);
-        listLV = binding.taskList;
+//        listLV = binding.taskList;
+        listRV = binding.taskList;
         refreshView();
         return binding.getRoot();
 
@@ -75,6 +81,7 @@ public class ListItemFragment extends Fragment {
 
         binding.addButton.setOnClickListener(e -> {
             addItem(binding.newTask.getText().toString());
+            binding.newTask.setText("");
         });
 
 //
@@ -108,11 +115,14 @@ public class ListItemFragment extends Fragment {
             mTasks.add(item);
         }
 
-        ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks, this);
+//        ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks, this);
+        ListItemRVAdapter adapter1 = new ListItemRVAdapter(mTasks, this);
         // after passing this array list to our adapter
         // class we are setting our adapter to our list view.
-        listLV.setAdapter(adapter);
-
+//        listLV.setAdapter(adapter);
+        listRV.setAdapter(adapter1);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        listRV.setLayoutManager(mLayoutManager);
         /*
         db.collection("lists").whereEqualTo("name", "list").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {

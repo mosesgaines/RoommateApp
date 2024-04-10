@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.4"
         android:text="@string/delete"
+        android:backgroundTint="@color/red"
         />
 
 

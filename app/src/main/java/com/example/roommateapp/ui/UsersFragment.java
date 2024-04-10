@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.example.roommateapp.GroupsLVAdapter;
 import com.example.roommateapp.R;
 import com.example.roommateapp.UserLVAdapter;
+import com.example.roommateapp.UserRVAdapter;
 import com.example.roommateapp.databinding.UsersFragmentBinding;
 import com.example.roommateapp.model.Group;
 import com.example.roommateapp.model.User;
@@ -52,7 +55,9 @@ public class UsersFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ArrayList<User> mUserList;
-    ListView userLV;
+    private RecyclerView userRV;
+    private RecyclerView.LayoutManager mLayoutManager;
+
 
     private static final String TAG = "UsersFragment";
     private static String userID;
@@ -87,10 +92,13 @@ public class UsersFragment extends Fragment {
                     Log.d(TAG, "Error getting document: ", taskDocumentSnapshot.getException());
                 }
 
-                UserLVAdapter adapter = new UserLVAdapter(getActivity().getApplicationContext(), mUserList, this);
+//                UserLVAdapter adapter = new UserLVAdapter(getActivity().getApplicationContext(), mUserList, this);
+                UserRVAdapter adapter = new UserRVAdapter(mUserList, this);
                 // after passing this array list to our adapter
                 // class we are setting our adapter to our list view.
-                userLV.setAdapter(adapter);
+                userRV.setAdapter(adapter);
+                mLayoutManager = new LinearLayoutManager(getContext());
+                userRV.setLayoutManager(mLayoutManager);
             });
         }
 
@@ -139,7 +147,7 @@ public class UsersFragment extends Fragment {
 
         binding = UsersFragmentBinding.inflate(inflater, container, false);
 
-        userLV = binding.usersList;
+        userRV = binding.usersList;
         loadDatainListview();
 
         binding.signoutButton.setOnClickListener(e -> {
@@ -162,8 +170,8 @@ public class UsersFragment extends Fragment {
         });
 
         binding.addButton.setOnClickListener(e -> {
-            addNewUser(binding.newList.getText().toString());
-            binding.newList.setText("");
+            addNewUser(binding.newUser.getText().toString());
+            binding.newUser.setText("");
         });
 
 

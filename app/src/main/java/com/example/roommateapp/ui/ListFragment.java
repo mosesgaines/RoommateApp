@@ -15,9 +15,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.roommateapp.GroupsLVAdapter;
 import com.example.roommateapp.ListsLVAdapter;
+import com.example.roommateapp.ListsRVAdapter;
 import com.example.roommateapp.R;
 import com.example.roommateapp.UserLVAdapter;
 import com.example.roommateapp.databinding.ListFragmentBinding;
@@ -39,6 +42,8 @@ public class ListFragment extends Fragment {
     private FirebaseFirestore db;
     private ArrayList<TaskList> mTaskList;
     private ListView listLV;
+    private RecyclerView listRV;
+    private RecyclerView.LayoutManager mLayoutManager;
     private final String TAG = "ListFragment";
 
 
@@ -57,7 +62,10 @@ public class ListFragment extends Fragment {
     ) {
 
         binding = ListFragmentBinding.inflate(inflater, container, false);
-        listLV = binding.listsList;
+//        listLV = binding.listsList;
+        listRV = binding.listsList;
+        mLayoutManager = new LinearLayoutManager(getContext());
+        listRV.setLayoutManager(mLayoutManager);
         refreshView();
         return binding.getRoot();
 
@@ -119,10 +127,12 @@ public class ListFragment extends Fragment {
                     Log.d(TAG, "Error getting document: ", taskDocumentSnapshot.getException());
                 }
 
-                ListsLVAdapter adapter = new ListsLVAdapter(getActivity().getApplicationContext(), mTaskList, this);
+//                ListsLVAdapter adapter = new ListsLVAdapter(getActivity().getApplicationContext(), mTaskList, this);
+                ListsRVAdapter adapter = new ListsRVAdapter(mTaskList, this);
                 // after passing this array list to our adapter
                 // class we are setting our adapter to our list view.
-                listLV.setAdapter(adapter);
+//                listLV.setAdapter(adapter);
+                listRV.setAdapter(adapter);
             });
         }
         /*
