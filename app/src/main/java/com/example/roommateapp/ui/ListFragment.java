@@ -41,7 +41,6 @@ public class ListFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ArrayList<TaskList> mTaskList;
-    private ListView listLV;
     private RecyclerView listRV;
     private RecyclerView.LayoutManager mLayoutManager;
     private final String TAG = "ListFragment";
@@ -62,7 +61,6 @@ public class ListFragment extends Fragment {
     ) {
 
         binding = ListFragmentBinding.inflate(inflater, container, false);
-//        listLV = binding.listsList;
         listRV = binding.listsList;
         mLayoutManager = new LinearLayoutManager(getContext());
         listRV.setLayoutManager(mLayoutManager);
@@ -98,6 +96,7 @@ public class ListFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        listRV.setAdapter(null);
     }
 
     private void signOut() {

@@ -35,7 +35,7 @@ public class LoginFragment extends Fragment {
 
     private LoginFragmentBinding binding;
     private FirebaseAuth mAuth;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "LoginFragment";
 
 
     @Override
@@ -67,10 +67,36 @@ public class LoginFragment extends Fragment {
 
     }
 
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        binding = null;
+//    }
+//
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        binding = null;
+//    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        binding = null;
+        Log.d(TAG, "onPause() called");
+    }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        super.onCreateView()
+//    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        Log.d(TAG, "onDestroyView() called");
     }
 
     private boolean validateForm() {

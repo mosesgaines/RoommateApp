@@ -39,7 +39,6 @@ public class ListItemFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ArrayList<String> mTasks;
-    private ListView listLV;
     private RecyclerView listRV;
     private RecyclerView.LayoutManager mLayoutManager;
 
@@ -91,8 +90,9 @@ public class ListItemFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        refreshView();
+//        refreshView();
         binding = null;
+        listRV.setAdapter(null);
     }
 
     private void signOut() {

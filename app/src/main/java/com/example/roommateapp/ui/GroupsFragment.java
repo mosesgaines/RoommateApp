@@ -93,11 +93,18 @@ public class GroupsFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        binding = null;
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mUserList = new ArrayList<Group>();
         binding = null;
-        refreshView();
+        groupRV.setAdapter(null);
+//        refreshView();
     }
 
     private void signOut() {

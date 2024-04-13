@@ -193,6 +193,7 @@ public class UsersFragment extends Fragment {
         super.onDestroyView();
         mUserList = new ArrayList<User>();
         binding = null;
+        userRV.setAdapter(null);
     }
 
     private void signOut() {
