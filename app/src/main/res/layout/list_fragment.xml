@@ -23,7 +23,6 @@
         android:textColor="@color/black"
         android:layout_marginTop="10dp"
         android:inputType="text"
-        android:layout_above="@id/listsList"
         android:layout_alignParentTop="true"
         android:textAlignment="center"
         />
@@ -67,7 +66,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listsList"
         android:layout_width="match_parent"
-        android:layout_height="570dp"
-        android:layout_above="@id/groupsButton"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_list"
         />
 </RelativeLayout>

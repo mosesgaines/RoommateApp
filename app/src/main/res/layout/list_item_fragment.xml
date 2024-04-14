@@ -22,7 +22,6 @@
         android:textColor="@color/black"
         android:layout_marginTop="10dp"
         android:inputType="text"
-        android:layout_above="@id/taskList"
         android:textAlignment="center"
         android:layout_alignParentTop="true"
         />
@@ -59,7 +58,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/taskList"
         android:layout_width="match_parent"
-        android:layout_height="570dp"
-        android:layout_above="@id/listsButton"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_task"
         />
 </RelativeLayout>
