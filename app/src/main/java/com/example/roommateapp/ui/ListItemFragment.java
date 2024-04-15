@@ -1,7 +1,13 @@
 package com.example.roommateapp.ui;
 
+import static androidx.core.content.ContextCompat.getSystemService;
 import static com.example.roommateapp.ui.MainActivity.getCurrList;
 
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -41,6 +47,38 @@ public class ListItemFragment extends Fragment {
     private ArrayList<String> mTasks;
     private RecyclerView listRV;
     private RecyclerView.LayoutManager mLayoutManager;
+    private ConnectivityManager connectivityManager;
+
+    private ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(@NonNull Network network) {
+            super.onAvailable(network);
+        }
+
+        @Override
+        public void onLost(@NonNull Network network) {
+            super.onLost(network);
+            try {
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                    Toast.makeText(getContext(), "Please connect to a network in order for the app" +
+                            " to work.", Toast.LENGTH_SHORT).show();
+                }
+            } catch (NullPointerException e) {
+
+            }
+        }
+        @Override
+        public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
+            super.onCapabilitiesChanged(network, networkCapabilities);
+            final boolean unmetered = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
+        }
+    };
+    private NetworkRequest networkRequest = new NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build();
 
 
     @Override
@@ -49,6 +87,17 @@ public class ListItemFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mTasks = new ArrayList<>();
+        connectivityManager =
+                (ConnectivityManager) getSystemService(getContext(), ConnectivityManager.class);
+        assert connectivityManager != null;
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+        try {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                Toast.makeText(getContext(), "Please connect to a network in order for the app" +
+                        " to work.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (NullPointerException e) {}
     }
 
     @Override
@@ -93,6 +142,7 @@ public class ListItemFragment extends Fragment {
 //        refreshView();
         binding = null;
         listRV.setAdapter(null);
+        connectivityManager.unregisterNetworkCallback(networkCallback);
     }
 
     private void signOut() {
