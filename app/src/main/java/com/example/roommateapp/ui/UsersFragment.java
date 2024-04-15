@@ -220,6 +220,7 @@ public class UsersFragment extends Fragment {
                     for (QueryDocumentSnapshot user : task.getResult()) {
                         User newUser = new User(Long.parseLong(user.getId()), user, userRef.document(user.getId()));
                         currGroup.addUser(newUser);
+                        newUser.addGroup(currGroup);
                     }
                     refreshView();
                 } else {

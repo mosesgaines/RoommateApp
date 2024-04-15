@@ -92,6 +92,15 @@ public class User {
         //Location stuff once figured out
     }
 
+    //Constructor for testing purposes
+    public User(String name, String email, int groupID) {
+        this.name = name;
+        this.email = email;
+        this.userID = 0;
+        this.groupIdList = new ArrayList<String>();
+        this.groupIdList.add(Integer.toString(groupID));
+    }
+
     public User (long userID, DocumentSnapshot user, DocumentReference ref) {
         this.userID = userID;
         this.groupIdList = new ArrayList<String>();

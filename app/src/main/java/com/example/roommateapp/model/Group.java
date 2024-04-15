@@ -128,6 +128,16 @@ public class Group {
                     }
                 });
     }
+
+    public Group(String name, int userID, int listID) {
+        this.name = name;
+        this.groupID = 0;
+        this.userIDList = new ArrayList<String>();
+        this.taskIDList = new ArrayList<String>();
+        this.userIDList.add(Integer.toString(userID));
+        this.taskIDList.add(Integer.toString(listID));
+
+    }
     public void addTaskList (TaskList taskList) {
         //Add task to task list and update group in db
         this.taskList.add(taskList);
