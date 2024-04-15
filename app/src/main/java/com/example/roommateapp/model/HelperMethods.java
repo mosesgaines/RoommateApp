@@ -51,7 +51,13 @@ public class HelperMethods {
     public static ArrayList<String> parseStringToItemList(String input) {
         input = input.substring(1, input.length() - 1);
         String[] parts = input.split("\\s*,\\s*");
-        return new ArrayList<>(Arrays.asList(parts));
+        ArrayList<String> items = new ArrayList<String>();
+        for(String item: parts) {
+            if (item.length() > 0) {
+                items.add(item);
+            }
+        }
+        return items;
     }
 
     public static void incrementUserId() {

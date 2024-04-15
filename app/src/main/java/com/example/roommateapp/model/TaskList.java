@@ -96,6 +96,13 @@ public class TaskList {
         this.items = parseStringToItemList(itemString);
         Log.d(TAG, "item data: " + itemString);
     }
+    //Constructor for testing purposes
+    public TaskList(String name, int itemID) {
+        this.name = name;
+        this.listID = 0;
+        this.items = new ArrayList<String>();
+        this.items.add(Integer.toString(itemID));
+    }
     //Methods for adding to and removing from List
     public void addItem (String item) {
         //Adds item to list and updates list in db
