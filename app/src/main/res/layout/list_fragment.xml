@@ -23,7 +23,7 @@
         android:textColor="@color/black"
         android:layout_marginTop="10dp"
         android:inputType="text"
-        android:layout_above="@id/groupsButton"
+        android:layout_alignParentTop="true"
         android:textAlignment="center"
         />
 
@@ -34,8 +34,9 @@
         android:text="@string/add"
         android:backgroundTint="@color/red"
         android:layout_toEndOf="@id/new_list"
-        android:layout_below="@id/listsList"
+        android:layout_above="@id/listsList"
         android:layout_alignBottom="@id/new_list"
+        android:layout_alignParentTop="true"
         />
     <Button
         android:id="@+id/groupsButton"
@@ -62,10 +63,10 @@
         android:text="@string/signout"
         android:layout_toEndOf="@id/gpsButton"
         android:backgroundTint="@color/red"/>
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listsList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/new_list"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_list"
         />
 </RelativeLayout>

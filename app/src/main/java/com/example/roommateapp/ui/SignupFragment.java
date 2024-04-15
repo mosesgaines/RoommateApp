@@ -1,5 +1,12 @@
 package com.example.roommateapp.ui;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,13 +29,55 @@ public class SignupFragment extends Fragment {
 
     private SignupFragmentBinding binding;
     private FirebaseAuth mAuth;
-
     private static final String TAG = "SignupFragment";
+    private ConnectivityManager connectivityManager;
+
+    private ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(@NonNull Network network) {
+            super.onAvailable(network);
+        }
+
+        @Override
+        public void onLost(@NonNull Network network) {
+            super.onLost(network);
+            try {
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                    Toast.makeText(getContext(), "Please connect to a network in order for the app" +
+                            " to work.", Toast.LENGTH_SHORT).show();
+                }
+            } catch (NullPointerException e) {
+
+            }
+        }
+        @Override
+        public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
+            super.onCapabilitiesChanged(network, networkCapabilities);
+            final boolean unmetered = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
+        }
+    };
+    private NetworkRequest networkRequest = new NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        connectivityManager =
+                (ConnectivityManager) getSystemService(getContext(), ConnectivityManager.class);
+        assert connectivityManager != null;
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+        try {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                Toast.makeText(getContext(), "Please connect to a network in order for the app" +
+                        " to work.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (NullPointerException e) {}
 
     }
     @Override
@@ -67,6 +116,7 @@ public class SignupFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        connectivityManager.unregisterNetworkCallback(networkCallback);
     }
 
     private boolean validateForm() {

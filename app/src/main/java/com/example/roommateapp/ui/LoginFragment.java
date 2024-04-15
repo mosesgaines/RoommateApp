@@ -1,7 +1,13 @@
 package com.example.roommateapp.ui;
 
+import static androidx.core.content.ContextCompat.getSystemService;
 import static com.example.roommateapp.ui.MainActivity.setCurrUser;
 
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -30,18 +36,64 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.net.NetworkInterface;
+
 
 public class LoginFragment extends Fragment {
 
     private LoginFragmentBinding binding;
     private FirebaseAuth mAuth;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "LoginFragment";
+    private ConnectivityManager connectivityManager;
+
+    private ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(@NonNull Network network) {
+            super.onAvailable(network);
+        }
+
+        @Override
+        public void onLost(@NonNull Network network) {
+            super.onLost(network);
+            Log.d(TAG, "onLost() called");
+            try {
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                    Toast.makeText(getContext(), "Please connect to a network in order for the app" +
+                            " to work.", Toast.LENGTH_SHORT).show();
+                }
+            } catch (NullPointerException e) {
+
+            }
+        }
+        @Override
+        public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
+            super.onCapabilitiesChanged(network, networkCapabilities);
+            final boolean unmetered = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
+        }
+    };
+    private NetworkRequest networkRequest = new NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build();
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
+        connectivityManager =
+                (ConnectivityManager) getSystemService(getContext(), ConnectivityManager.class);
+        assert connectivityManager != null;
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+        try {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                Toast.makeText(getContext(), "Please connect to a network in order for the app" +
+                        " to work.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (NullPointerException e) {}
     }
 
     @Override
@@ -51,6 +103,7 @@ public class LoginFragment extends Fragment {
 
         binding = LoginFragmentBinding.inflate(inflater, container, false);
         Log.d(TAG, "onCreateView(LayoutInflater, ViewGroup, Bundle) called");
+
         return binding.getRoot();
 
     }
@@ -63,14 +116,39 @@ public class LoginFragment extends Fragment {
 
         binding.signupText.setOnClickListener(e -> NavHostFragment.findNavController(LoginFragment.this)
                 .navigate(R.id.action_LoginFragment_to_SignupFragment));
-
-
     }
+
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        binding = null;
+//    }
+//
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        binding = null;
+//    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        binding = null;
+        Log.d(TAG, "onPause() called");
+    }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        super.onCreateView()
+//    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        Log.d(TAG, "onDestroyView() called");
+        connectivityManager.unregisterNetworkCallback(networkCallback);
     }
 
     private boolean validateForm() {

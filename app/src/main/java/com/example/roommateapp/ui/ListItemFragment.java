@@ -1,12 +1,20 @@
 package com.example.roommateapp.ui;
 
+import static androidx.core.content.ContextCompat.getSystemService;
 import static com.example.roommateapp.ui.MainActivity.getCurrList;
 
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.roommateapp.ListItemLVAdapter;
+import com.example.roommateapp.ListItemRVAdapter;
 import com.example.roommateapp.R;
 import com.example.roommateapp.databinding.ListItemFragmentBinding;
 import com.example.roommateapp.model.TaskList;
@@ -36,7 +45,40 @@ public class ListItemFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ArrayList<String> mTasks;
-    private ListView listLV;
+    private RecyclerView listRV;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ConnectivityManager connectivityManager;
+
+    private ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(@NonNull Network network) {
+            super.onAvailable(network);
+        }
+
+        @Override
+        public void onLost(@NonNull Network network) {
+            super.onLost(network);
+            try {
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                    Toast.makeText(getContext(), "Please connect to a network in order for the app" +
+                            " to work.", Toast.LENGTH_SHORT).show();
+                }
+            } catch (NullPointerException e) {
+
+            }
+        }
+        @Override
+        public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
+            super.onCapabilitiesChanged(network, networkCapabilities);
+            final boolean unmetered = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
+        }
+    };
+    private NetworkRequest networkRequest = new NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build();
 
 
     @Override
@@ -45,6 +87,17 @@ public class ListItemFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mTasks = new ArrayList<>();
+        connectivityManager =
+                (ConnectivityManager) getSystemService(getContext(), ConnectivityManager.class);
+        assert connectivityManager != null;
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+        try {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                Toast.makeText(getContext(), "Please connect to a network in order for the app" +
+                        " to work.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (NullPointerException e) {}
     }
 
     @Override
@@ -54,7 +107,8 @@ public class ListItemFragment extends Fragment {
     ) {
 
         binding = ListItemFragmentBinding.inflate(inflater, container, false);
-        listLV = binding.taskList;
+//        listLV = binding.taskList;
+        listRV = binding.taskList;
         refreshView();
         return binding.getRoot();
 
@@ -75,6 +129,7 @@ public class ListItemFragment extends Fragment {
 
         binding.addButton.setOnClickListener(e -> {
             addItem(binding.newTask.getText().toString());
+            binding.newTask.setText("");
         });
 
 //
@@ -84,8 +139,10 @@ public class ListItemFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        refreshView();
+//        refreshView();
         binding = null;
+        listRV.setAdapter(null);
+        connectivityManager.unregisterNetworkCallback(networkCallback);
     }
 
     private void signOut() {
@@ -108,11 +165,14 @@ public class ListItemFragment extends Fragment {
             mTasks.add(item);
         }
 
-        ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks, this);
+//        ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks, this);
+        ListItemRVAdapter adapter1 = new ListItemRVAdapter(mTasks, this);
         // after passing this array list to our adapter
         // class we are setting our adapter to our list view.
-        listLV.setAdapter(adapter);
-
+//        listLV.setAdapter(adapter);
+        listRV.setAdapter(adapter1);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        listRV.setLayoutManager(mLayoutManager);
         /*
         db.collection("lists").whereEqualTo("name", "list").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {

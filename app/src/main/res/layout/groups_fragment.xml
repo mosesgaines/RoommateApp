@@ -39,8 +39,8 @@
         android:textColor="@color/black"
         android:layout_marginTop="10dp"
         android:inputType="text"
-        android:layout_above="@id/signoutButton"
         android:textAlignment="center"
+        android:layout_alignParentTop="true"
         />
 
     <Button
@@ -50,8 +50,9 @@
         android:text="@string/add"
         android:backgroundTint="@color/red"
         android:layout_toEndOf="@id/new_group"
-        android:layout_below="@id/groupsList"
+        android:layout_above="@id/groupsList"
         android:layout_alignBottom="@id/new_group"
+        android:layout_alignParentTop="true"
         />
     <Button
         android:id="@+id/signoutButton"
@@ -61,13 +62,11 @@
         android:text="@string/signout"
         android:layout_centerHorizontal="true"
         android:backgroundTint="@color/red"/>
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/groupsList"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:drawSelectorOnTop="false"
-        android:layout_above="@id/new_group"
+        android:layout_below="@id/new_group"
         />
 
 

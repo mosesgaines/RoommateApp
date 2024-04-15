@@ -22,8 +22,8 @@
         android:textColor="@color/black"
         android:layout_marginTop="10dp"
         android:inputType="text"
-        android:layout_above="@id/listsButton"
         android:textAlignment="center"
+        android:layout_alignParentTop="true"
         />
 
     <Button
@@ -33,8 +33,9 @@
         android:text="@string/add"
         android:backgroundTint="@color/red"
         android:layout_toEndOf="@id/new_task"
-        android:layout_below="@id/taskList"
+        android:layout_above="@id/taskList"
         android:layout_alignBottom="@id/new_task"
+        android:layout_alignParentTop="true"
         />
 
     <Button
@@ -54,10 +55,10 @@
         android:text="@string/signout"
         android:layout_toEndOf="@id/listsButton"
         android:backgroundTint="@color/red"/>
-    <ListView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/taskList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/new_task"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_task"
         />
 </RelativeLayout>

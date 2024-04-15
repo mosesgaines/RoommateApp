@@ -1,9 +1,15 @@
 package com.example.roommateapp.ui;
 
+import static androidx.core.content.ContextCompat.getSystemService;
 import static com.example.roommateapp.ui.MainActivity.getCurrUser;
 import static com.example.roommateapp.ui.MainActivity.setCurrUser;
 import static com.google.firebase.firestore.FieldPath.documentId;
 
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +21,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.roommateapp.GroupsRVAdapter;
 import com.example.roommateapp.R;
 import com.example.roommateapp.GroupsLVAdapter;
 import com.example.roommateapp.databinding.GroupsFragmentBinding;
@@ -41,7 +50,41 @@ public class GroupsFragment extends Fragment {
     private FirebaseFirestore db;
     private ArrayList<Group> mUserList;
     private final String TAG = "GroupsFragment";
-    ListView groupLV;
+    private RecyclerView groupRV;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private ConnectivityManager connectivityManager;
+
+    private ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onAvailable(@NonNull Network network) {
+            super.onAvailable(network);
+        }
+
+        @Override
+        public void onLost(@NonNull Network network) {
+            super.onLost(network);
+            try {
+                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                    Toast.makeText(getContext(), "Please connect to a network in order for the app" +
+                            " to work.", Toast.LENGTH_SHORT).show();
+                }
+            } catch (NullPointerException e) {
+
+            }
+        }
+        @Override
+        public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
+            super.onCapabilitiesChanged(network, networkCapabilities);
+            final boolean unmetered = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED);
+        }
+    };
+    private NetworkRequest networkRequest = new NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build();
+
 
 
     @Override
@@ -50,6 +93,17 @@ public class GroupsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         mUserList = new ArrayList<>();
+        connectivityManager =
+                (ConnectivityManager) getSystemService(getContext(), ConnectivityManager.class);
+        assert connectivityManager != null;
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+        try {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo == null || !networkInfo.isConnectedOrConnecting()) {
+                Toast.makeText(getContext(), "Please connect to a network in order for the app" +
+                        " to work.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (NullPointerException e) {}
     }
 
     @Override
@@ -59,8 +113,8 @@ public class GroupsFragment extends Fragment {
     ) {
 
         binding = GroupsFragmentBinding.inflate(inflater, container, false);
-        groupLV = binding.groupsList;
-        loadDataInListview();
+        groupRV = binding.groupsList;
+        refreshView();
         return binding.getRoot();
 
 
@@ -88,10 +142,19 @@ public class GroupsFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        binding = null;
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mUserList = new ArrayList<Group>();
         binding = null;
+        groupRV.setAdapter(null);
+        connectivityManager.unregisterNetworkCallback(networkCallback);
+//        refreshView();
     }
 
     private void signOut() {
@@ -105,7 +168,6 @@ public class GroupsFragment extends Fragment {
         // below line is use to get data from Firebase
 
         // firestore using collection in android.
-
         ArrayList<String> currUserGroups = getCurrUserGroups();
         for (String currUserGroupId : currUserGroups) {
             DocumentReference groupRef = db.collection("groups").document(currUserGroupId);
@@ -121,10 +183,13 @@ public class GroupsFragment extends Fragment {
                         Log.d(TAG, "Error getting document: ", taskDocumentSnapshot.getException());
                     }
 
-                GroupsLVAdapter adapter = new GroupsLVAdapter(getActivity().getApplicationContext(), mUserList, this);
+//                GroupsLVAdapter adapter = new GroupsLVAdapter(getActivity().getApplicationContext(), mUserList, this);
+                GroupsRVAdapter adapter = new GroupsRVAdapter(mUserList, this);
                 // after passing this array list to our adapter
                 // class we are setting our adapter to our list view.
-                groupLV.setAdapter(adapter);
+                groupRV.setAdapter(adapter);
+                mLayoutManager = new LinearLayoutManager(getContext());
+                groupRV.setLayoutManager(mLayoutManager);
             });
         }
 
