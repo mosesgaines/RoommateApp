@@ -27,16 +27,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.net.NetworkInterface;
 
 
 public class LoginFragment extends Fragment {
@@ -219,6 +215,15 @@ public class LoginFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    public void fillText(String email, String password) {
+        this.binding.email.setText(email);
+        this.binding.password.setText(password);
+    }
+
+    public LoginFragmentBinding getBinding() {
+        return this.binding;
     }
 
 }

@@ -173,44 +173,7 @@ public class ListItemFragment extends Fragment {
         listRV.setAdapter(adapter1);
         mLayoutManager = new LinearLayoutManager(getContext());
         listRV.setLayoutManager(mLayoutManager);
-        /*
-        db.collection("lists").whereEqualTo("name", "list").get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    // after getting the data we are calling on success method
-                    // and inside this method we are checking if the received
-                    // query snapshot is empty or not.
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // if the snapshot is not empty we are hiding
-                        // our progress bar and adding our data in a list.
-                        List<DocumentSnapshot> list = queryDocumentSnapshots.getDocuments();
-                        for (DocumentSnapshot d : list) {
-                            // after getting this list we are passing
-                            // that list to our object class.
-                            TaskList tList = d.toObject(TaskList.class);
-                            // after getting data from Firebase we are
-                            // storing that data in our array list
-                            mTasks.addAll(tList.getItems());
-                        }
-                        // after that we are passing our array list to our adapter class.
-                        ListItemLVAdapter adapter = new ListItemLVAdapter(getActivity().getApplicationContext(), mTasks, this);
-                        // after passing this array list to our adapter
-                        // class we are setting our adapter to our list view.
-                        listLV.setAdapter(adapter);
-//                        listLV.setAdapter(testAdapter);
-                    } else {
-                        // if the snapshot is empty we are displaying a toast message.
-                        Toast.makeText(ListItemFragment.this.getContext(), "No data found in Database", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(e -> {
 
-                    // we are displaying a toast message
-
-                    // when we get any error from Firebase.
-
-                    Toast.makeText(ListItemFragment.this.getContext(), "Fail to load data..", Toast.LENGTH_SHORT).show();
-                });
-
-         */
     }
 
     private ArrayList<String> getCurrListItems() {
